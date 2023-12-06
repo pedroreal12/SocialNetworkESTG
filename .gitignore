@@ -529,7 +529,7 @@ FodyWeavers.xsd
 *.msp
 
 ### Docker ###
-*.md
+#*.md
 
 # JetBrains Rider
 
