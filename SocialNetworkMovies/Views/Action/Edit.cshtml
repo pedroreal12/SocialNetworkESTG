@@ -1,0 +1,51 @@
+﻿@model SocialNetworkMovies.Models.Action
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Action</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="StrName" class="control-label"></label>
+                <input asp-for="StrName" class="form-control" />
+                <span asp-validation-for="StrName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StrController" class="control-label"></label>
+                <input asp-for="StrController" class="form-control" />
+                <span asp-validation-for="StrController" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StrState" class="control-label"></label>
+                <input asp-for="StrState" class="form-control" />
+                <span asp-validation-for="StrState" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateLastChanged" class="control-label"></label>
+                <input asp-for="DateLastChanged" class="form-control" />
+                <span asp-validation-for="DateLastChanged" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

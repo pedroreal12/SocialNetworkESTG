@@ -1,0 +1,71 @@
+﻿@model SocialNetworkMovies.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StrName" class="control-label"></label>
+                <input asp-for="StrName" class="form-control" />
+                <span asp-validation-for="StrName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StrEmail" class="control-label"></label>
+                <input asp-for="StrEmail" class="form-control" />
+                <span asp-validation-for="StrEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StrRecoverMail" class="control-label"></label>
+                <input asp-for="StrRecoverMail" class="form-control" />
+                <span asp-validation-for="StrRecoverMail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StrPhoneNumber" class="control-label"></label>
+                <input asp-for="StrPhoneNumber" class="form-control" />
+                <span asp-validation-for="StrPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StrState" class="control-label"></label>
+                <input asp-for="StrState" class="form-control" />
+                <span asp-validation-for="StrState" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FkIdUserCreated" class="control-label"></label>
+                <select asp-for="FkIdUserCreated" class ="form-control" asp-items="ViewBag.FkIdUserCreated"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FkIdUserLastChanged" class="control-label"></label>
+                <select asp-for="FkIdUserLastChanged" class ="form-control" asp-items="ViewBag.FkIdUserLastChanged"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateLastChanged" class="control-label"></label>
+                <input asp-for="DateLastChanged" class="form-control" />
+                <span asp-validation-for="DateLastChanged" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

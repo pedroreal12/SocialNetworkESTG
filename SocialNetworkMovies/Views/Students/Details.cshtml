@@ -1,0 +1,54 @@
+﻿@model SocialNetworkMovies.Models.Student
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Student</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StrName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StrName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StrMail)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StrMail)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StrPhoneNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StrPhoneNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StrState)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StrState)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DateCreated)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DateCreated)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DateLastChanged)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DateLastChanged)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
