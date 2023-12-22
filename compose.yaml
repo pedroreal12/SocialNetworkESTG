@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  server:
+    container_name: SNM_Server
+    volumes:
+      - type: bind
+        source: ./SocialNetowkMovies/SocialNetowkMovies/
+        target: /source/
+    build:
+      context: .
+      target: final
+    ports:
+      - 80:80
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: SNM_Database 
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=A&VeryComplex123Password
