@@ -4,7 +4,7 @@ services:
     container_name: SNM_Server
     volumes:
       - type: bind
-        source: ./SocialNetowkMovies/SocialNetowkMovies/
+        source: ./SocialNetworkMovies/SocialNetworkMovies/
         target: /source/
     build:
       context: .
