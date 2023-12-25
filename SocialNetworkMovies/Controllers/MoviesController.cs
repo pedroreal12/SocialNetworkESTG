@@ -45,7 +45,7 @@ namespace SocialNetworkMovies.Controllers
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", "Bearer " + key);
-            var response = await client.GetAsync(request);
+            var response = JsonSerializer.Serialize(await client.GetAsync(request));
 
             return Json(response);
         }
