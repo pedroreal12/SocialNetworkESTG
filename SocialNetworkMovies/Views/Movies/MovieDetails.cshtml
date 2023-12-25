@@ -1,0 +1,21 @@
+﻿@model SocialNetworkMovies.Models.Movie
+
+@{
+    ViewData["Title"] = "Movie Details";
+}
+
+<h1>MovieDetails</h1>
+
+<div>
+    <h4>Movie</h4>
+    <hr />
+    <div class="movieDetails">
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/Movies/details.js"></script>
+}
