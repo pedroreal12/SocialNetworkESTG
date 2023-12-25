@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetworkMovies.Models;
 using System.Diagnostics;
 
 namespace SocialNetworkMovies.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        readonly string api = SocialNetworkMovies.FileHandler.FileHandler.readFile();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -17,6 +20,7 @@ namespace SocialNetworkMovies.Controllers
         {
             return View();
         }
+
 
         public IActionResult Privacy()
         {
