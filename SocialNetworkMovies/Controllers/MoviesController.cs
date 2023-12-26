@@ -12,16 +12,23 @@ namespace SocialNetworkMovies.Controllers
     {
         readonly string key = SocialNetworkMovies.FileHandler.FileHandler.readFile();
 
-        // GET: MoviesController
-        public ActionResult Index()
+        // GET: MoviesController/Details/5
+        public ActionResult MovieDetails()
         {
             return View();
         }
 
-        // GET: MoviesController/Details/5
-        public ActionResult MovieDetails(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetMovieByTitle(string title)
         {
-            return View();
+            var options = new RestClientOptions("https://api.themoviedb.org/3/search/movie?query=" + title);
+            var client = new RestClient(options);
+            var request = new RestRequest("");
+            request.AddHeader("accept", "application/json");
+            request.AddHeader("Authorization", "Bearer " + key);
+            var response = JsonSerializer.Serialize(await client.GetAsync(request));
+
+            return Json(response);
         }
 
         public async Task<IActionResult> GetMoviesPopular()
@@ -50,67 +57,11 @@ namespace SocialNetworkMovies.Controllers
             return Json(response);
         }
 
-        // GET: MoviesController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: MoviesController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: MoviesController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: MoviesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         // GET: MoviesController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: MoviesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
