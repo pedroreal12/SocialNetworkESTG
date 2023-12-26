@@ -8,7 +8,7 @@ namespace SocialNetworkMovies.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly sndbContext _context = new();
+        private readonly SndbContext _context = new();
 
         // GET: StudentsController
         public ActionResult Index()
@@ -19,7 +19,6 @@ namespace SocialNetworkMovies.Controllers
         [HttpGet]
         public JsonResult GetStudents()
         {
-            
             return Json("");
         }
 
