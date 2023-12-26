@@ -1,0 +1,22 @@
+﻿@model IEnumerable<SocialNetworkMovies.Models.Discussion>
+
+    @{
+    ViewData["Title"] = "Index";
+    }
+
+    <h1>Index</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <div class="row">
+        <h2>Last Discussions</h2>
+        <div class="card-body">
+            <div class="displayDiscussions">
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+    <script type="text/javascript" src="~/js/Discussions/index.js"></script>
+    }

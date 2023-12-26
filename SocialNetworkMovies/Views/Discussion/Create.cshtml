@@ -1,0 +1,44 @@
+﻿@model SocialNetworkMovies.Models.Discussion
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Discussion</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label for="movieSearch">Movie</label>
+                <input id="movieSearch" class="form-control" placeholder="Movie's title"/>
+                <br>
+                <button id="btnSearch" type="button" class="btn btn-success">Search</button>
+                <br>
+            </div>
+            <div class="form-group">
+                <select name="idMovie" id="idMovie" class="form-control">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="commentText">Comment</label>
+                <textarea name="commentText" id="commentText" class="form-control" rows="3"></textarea>
+                <br>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" src="~/js/Discussions/create.js"></script>
+}
