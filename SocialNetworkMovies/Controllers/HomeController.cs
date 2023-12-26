@@ -9,7 +9,6 @@ namespace SocialNetworkMovies.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        readonly string api = SocialNetworkMovies.FileHandler.FileHandler.readFile();
 
         public HomeController(ILogger<HomeController> logger)
         {
