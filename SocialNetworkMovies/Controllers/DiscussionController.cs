@@ -27,6 +27,28 @@ namespace SocialNetworkMovies.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Details()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetDiscussionId(int Id)
+        {
+            //TODO: add user created
+            var discussion = (from d in context.Discussions
+                              select new
+                              {
+                                  Id = d.Id,
+                                  MovieId = d.FkIdMovie,
+                                  Text = d.StrText,
+                                  DatePosted = d.DateCreated
+                              }).Where(d => d.Id == Id).First();
+            var data = JsonSerializer.Serialize(discussion);
+            return Json(data);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)

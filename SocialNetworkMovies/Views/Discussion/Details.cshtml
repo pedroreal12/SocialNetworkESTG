@@ -1,0 +1,42 @@
+﻿@model SocialNetworkMovies.Models.Discussion
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Discussion</h4>
+    <p id="datePosted"></p>
+    <hr />
+    <div class="col-md-8">
+        <div class="row">
+            <div class="movieInformation">
+                <p id="movieTitle"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="discussionOverview">
+                <div class="row">
+                    <textarea id="commentText" disabled="disabled"></textarea>
+                    <p id="createdBy"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="discussionComments">
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <br>
+    <button class="btn btn-success" id="addComment">Add Comment</button>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/Discussions/details.js"></script>
+}
