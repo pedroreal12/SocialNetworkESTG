@@ -28,10 +28,10 @@ $(document).ready(function() {
                     $(".movieDetails").append("<p>Collections Name " + content.belongs_to_collection.name + "</p>")
                 }
                 content.production_companies.forEach(function(element){
-                    $(".movieDetails").append("<p>Production Companie Name" + element.name  + "</p>")
+                    $(".movieDetails").append("<p>Production Companie Name " + element.name  + "</p>")
                 })
                 content.production_countries.forEach(function(element){
-                    $(".movieDetails").append("<p>Production Countrie " + element.name  + "</p>")
+                    $(".movieDetails").append("<p>Production Country " + element.name  + "</p>")
                 })
                 $(".movieDetails").append("<p>Budget " + content.budget + " US$</p>")
                 $(".movieDetails").append("<p>Revenue " + content.revenue + " US$</p>")
