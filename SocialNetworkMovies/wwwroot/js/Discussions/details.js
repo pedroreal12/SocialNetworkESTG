@@ -1,5 +1,6 @@
+var commentsPage = 0
+var idTextAreas = 0
 $(document).ready(function() {
-    var idTextAreas = 0
     var url = window.location.href;
     url = url.split("/");
     Id = url[5];
@@ -10,14 +11,12 @@ $(document).ready(function() {
         type: "GET",
         success: function(data) {
             var content = JSON.parse(data)
-            console.log(content)
             if (content.Id != undefined) {
                 $.ajax({
                     url: "/Movies/GetMovieId/" + content.MovieId,
                     type: "GET",
                     success: function(data) {
                         var movie = JSON.parse(JSON.parse(data).Content);
-                        console.log(movie)
                         if (movie.adult != undefined) {
                             $(".movieInformation").append("<p>" + movie.original_title + "</p><a href=\"" + movie.homepage + "\"><img src=\"" + imageUrl + movie.backdrop_path + "\"</img></a>")
                         }
@@ -25,27 +24,15 @@ $(document).ready(function() {
                 })
                 $("#commentText").html(content.Text)
                 $("#datePosted").html("Posted at: " + formatDate(content.DatePosted))
+                $(".discussionOverview").append("<button class=\"btn btn-link\" id=\"replyComment_" + content.Id + "\">Reply</button>");
+                $(".discussionOverview").append("<button class=\"btn btn-link\" id=\"postReply_" + content.Id + "\" onClick=\"postReply(this.id)\">Post reply</button>");
+                loadMoreComments()
             } else {
                 alert("No details about this discussion were found. Try refreshing this page later")
             }
         },
         error: function(error) {
             alert("Error " + error)
-        }
-    })
-
-    $.ajax({
-        url: "Comment/loadCommentsDiscussion/" + Id,
-        type: "GET",
-        success: function(data) {
-            var comments = JSON.parse(data)
-            comments.forEach(function(element) {
-                //TODO: Add user created
-                $(".discussionComments").append("<p>" + element.Text + " at " + element.DatePosted + "</p>")
-            })
-        },
-        error: function(error) {
-            alert("Error", error)
         }
     })
 
@@ -68,29 +55,61 @@ function formatDate(dateObj) {
 }
 
 function postComment(idTextArea) {
+    idTextArea = idTextArea.split("_")
 
     var data = {
         IdDiscussion: Id,
-        Text: $("#text_area_" + idTextArea).val()
+        Text: $("#textarea_" + idTextArea[1]).val()
     }
+    console.log("Text: " + data.Text)
     $.ajax({
         url: "/Comment/PostComment",
         type: "POST",
         data: data,
-        success: function(){
-            alert("Comment posted successfully!")
+        success: function(data) {
+            var content = JSON.parse(data)
+            if (content.data) {
+                alert("Comment posted successfully!")
+            } else {
+                alert("Error on posting comment. Try this later")
+            }
         },
-        error: function(error){
+        error: function(error) {
             alert("Error: " + error)
         }
     })
 }
 
-function removeComment(idTextArea){
-    console.log(idTextArea)
+function removeComment(idTextArea) {
     idTextArea = idTextArea.split("_")
     $("#textarea_" + idTextArea[1]).remove()
     $("#postComment_" + idTextArea[1]).remove()
     $("#removeComment_" + idTextArea[1]).remove()
     $(".discussionComments").children("br").remove()
+}
+
+function loadMoreComments() {
+    $.ajax({
+        url: "/Comment/loadCommentsDiscussion/?Id=" + Id + "&&Pagination=" + commentsPage,
+        type: "GET",
+        success: function(data) {
+            var comments = JSON.parse(data)
+            if (comments.length > 0) {
+                comments.forEach(function(element) {
+                    //TODO: Add user created
+                    $(".discussionComments").append("<div class=\"row\"><textarea disabled=\"disabled\">" + element.TextComment + "</textarea> at " + formatDate(element.DatePosted) + "</div>");
+                    $(".discussionComments").append("<button class=\"btn btn-link\" id=\"replyComment_" + element.IdComment + "\" onClick=\"replyComment(this.id)\">Reply</button>");
+                    $(".discussionComments").append("<button class=\"btn btn-link\" id=\"postReply_" + element.IdComment + "\" onClick=\"postReply(this.id)\">Post reply</button>");
+                })
+                $(".discussionComments").append("<div class=\"row\"><button class=\"btn btn-secondary loadMoreComments\">Load more Comments</button></div")
+                $(".loadMoreComments").click(loadMoreComments)
+                commentsPage += 1
+            } else {
+                alert("There are no more comments on this discussion. Try refreshing later")
+            }
+        },
+        error: function(error) {
+            alert("Error", error)
+        }
+    })
 }
