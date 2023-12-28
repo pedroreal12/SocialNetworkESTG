@@ -19,5 +19,7 @@ public partial class Discussion
 
     public string? HashUrl { get; set; }
 
+    public string? FkIdUserCreated { get; set; }
+
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

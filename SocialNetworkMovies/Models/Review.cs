@@ -14,4 +14,8 @@ public partial class Review
     public DateTime DateCreated { get; set; }
 
     public DateTime DateLastChanged { get; set; }
+
+    public string? FkIdUserCreated { get; set; }
+
+    public int? IntValue { get; set; }
 }

@@ -18,4 +18,6 @@ public partial class Professor
     public DateTime DateLastChanged { get; set; }
 
     public string? HashUrl { get; set; }
+
+    public string? FkIdUserCreated { get; set; }
 }

@@ -19,5 +19,7 @@ public partial class MovieList
 
     public string? HashUrl { get; set; }
 
+    public string? FkIdUserCreated { get; set; }
+
     public virtual UserList? FkIdListNavigation { get; set; }
 }
