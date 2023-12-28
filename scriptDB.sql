@@ -82,6 +82,9 @@ CREATE TABLE Permissions (
 CREATE TABLE Review(
     Id INT PRIMARY KEY IDENTITY (1, 1),
     FkIdMovie INT NOT NULL,
+    IntValue INT NOT NULL,
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
+    FkIdComment INT NOT NULL,
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
@@ -92,6 +95,7 @@ CREATE TABLE Administrator (
     StrName VARCHAR(128) NOT NULL,
     StrMail VARCHAR(128) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
     HashURL VARCHAR(255)
@@ -102,6 +106,7 @@ CREATE TABLE Professor (
     StrName VARCHAR(128) NOT NULL,
     StrMail VARCHAR(128) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
     HashURL VARCHAR(255)
@@ -113,6 +118,18 @@ CREATE TABLE Student (
     StrMail VARCHAR(128) NOT NULL,
     StrPhoneNumber VARCHAR(20) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
+    DateCreated DATETIME NOT NULL,
+    DateLastChanged DATETIME NOT NULL,
+    HashURL VARCHAR(255)
+);
+
+CREATE TABLE Discussion (
+    Id INT PRIMARY KEY IDENTITY (1, 1),
+    FkIdMovie INT NOT NULL,
+    strText VARCHAR(255) NOT NULL,
+    StrState VARCHAR(20) NOT NULL,
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
     HashURL VARCHAR(255)
@@ -120,9 +137,10 @@ CREATE TABLE Student (
 
 CREATE TABLE Comment (
     Id INT PRIMARY KEY IDENTITY (1, 1),
-    StrName VARCHAR(128) NOT NULL,
     FkIdComment INT FOREIGN KEY REFERENCES Comment(Id), 
     TextComment VARCHAR(255) NOT NULL,
+    FkIdDiscussion INT NULL FOREIGN KEY REFERENCES Discussion(Id),
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
@@ -133,6 +151,7 @@ CREATE TABLE UserList (
     Id INT PRIMARY KEY IDENTITY (1, 1),
     StrName VARCHAR(128) NOT NULL,
     FkIdMovieList INT FOREIGN KEY REFERENCES Comment(Id), 
+    FkIdUserCreated NVARCHAR(450) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
