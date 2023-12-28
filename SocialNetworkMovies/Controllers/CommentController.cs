@@ -20,6 +20,26 @@ namespace SocialNetworkMovies.Controllers
             return View();
         }
 
+        public JsonResult LoadRepliesCommentParentId(int Id, int Pagination)
+        {
+            var replies = (from r in context.Comments
+                           join d in context.Discussions
+                           on r.FkIdDiscussion equals d.Id
+                           select new
+                           {
+                               IdComment = r.Id,
+                               TextComment = r.TextComment,
+                               DatePosted = r.DateCreated,
+                               FkIdDiscussion = r.FkIdDiscussion,
+                               IdCommentParent = r.FkIdComment
+                           }).Where(c => c.FkIdDiscussion == Id)
+            .OrderByDescending(c => c.IdComment)
+            .Skip(Pagination * 10).Take(10).ToList();
+
+            var data = JsonSerializer.Serialize(replies);
+            return Json(data);
+        }
+
         [HttpGet]
         public JsonResult LoadCommentsDiscussion(int Id, int Pagination)
         {
@@ -32,12 +52,80 @@ namespace SocialNetworkMovies.Controllers
                                 TextComment = c.TextComment,
                                 DatePosted = c.DateCreated,
                                 FkIdDiscussion = c.FkIdDiscussion,
-                                IdCommentParent = c.FkIdComment
+                                IdCommentParent = c.FkIdComment,
                             }).Where(c => c.FkIdDiscussion == Id && c.IdCommentParent == null)
             .OrderByDescending(c => c.IdComment)
             .Skip(Pagination * 10).Take(10).ToList();
-            var data = JsonSerializer.Serialize(comments);
+
+            var replies = (from r in context.Comments
+                           join d in context.Discussions
+                           on r.FkIdDiscussion equals d.Id
+                           select new
+                           {
+                               IdComment = r.Id,
+                               TextComment = r.TextComment,
+                               DatePosted = r.DateCreated,
+                               FkIdDiscussion = r.FkIdDiscussion,
+                               IdCommentParent = r.FkIdComment,
+                           }).Where(r => r.FkIdDiscussion == Id && r.IdCommentParent != null)
+                            .OrderByDescending(r => r.IdComment)
+                            .Skip(Pagination * 10).Take(10).ToList();
+
+            var objects = new { Comments = comments, Replies = replies };
+            string data = JsonSerializer.Serialize(objects);
             return Json(data);
+        }
+
+        public JsonResult GetReplies(int IdDiscussion, int IdCommentParent, int Pagination)
+        {
+            var replies = (from r in context.Comments
+                           join d in context.Discussions
+                           on r.FkIdDiscussion equals d.Id
+                           select new
+                           {
+                               IdComment = r.Id,
+                               TextComment = r.TextComment,
+                               DatePosted = r.DateCreated,
+                               FkIdDiscussion = r.FkIdDiscussion,
+                               IdCommentParent = r.FkIdComment,
+                           }).Where(r => r.FkIdDiscussion == IdDiscussion && r.IdCommentParent == IdCommentParent)
+                            .OrderByDescending(r => r.IdComment)
+                            .Skip(Pagination * 10).Take(10).ToList();
+
+            string data = JsonSerializer.Serialize(replies);
+            return Json(data);
+        }
+        [HttpPost]
+        public JsonResult PostReply(IFormCollection collection)
+        {
+            try
+            {
+                if (int.Parse(collection["FkIdCommentParent"]) == null)
+                {
+                    return Json("{\"success\": \"false\"}");
+                }
+
+                Comment comment = new()
+                {
+                    StrName = "Remove this later",
+                    FkIdDiscussion = int.Parse(collection["IdDiscussion"]),
+                    TextComment = collection["Text"],
+                    FkIdComment = int.Parse(collection["FkIdCommentParent"]),
+                    DateCreated = DateTime.Now,
+                    DateLastChanged = DateTime.Now,
+                    StrState = "Activo"
+                };
+
+                // Add the new object to the Orders collection.
+                context.Comments.Add(comment);
+                context.SaveChanges();
+                return Json("{\"success\": \"true\"}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("{\"success\": \"false\"}");
+            }
         }
 
         [HttpPost]
@@ -58,12 +146,12 @@ namespace SocialNetworkMovies.Controllers
                 // Add the new object to the Orders collection.
                 context.Comments.Add(comment);
                 context.SaveChanges();
-                return Json("{\"data\": \"true\"}");
+                return Json("{\"success\": \"true\"}");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("{\"data\": \"false\"}");
+                return Json("{\"success\": \"false\"}");
             }
 
         }
