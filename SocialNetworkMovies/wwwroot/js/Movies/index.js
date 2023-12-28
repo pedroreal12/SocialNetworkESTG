@@ -4,7 +4,7 @@ $(document).ready(function(){
         url: '/Movies/GetMoviesPopular',
         type: 'GET',
         success: function(data) {
-            var content = JSON.parse(JSON.parse(data).Content);
+            var content = JSON.parse(data.content)
             if (content.results.length > 0) {
                 results = content.results
                 results.forEach(function(element) {

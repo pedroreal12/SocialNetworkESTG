@@ -26,7 +26,12 @@ namespace SocialNetworkMovies.Controllers
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", "Bearer " + key);
-            var response = JsonSerializer.Serialize(await client.GetAsync(request));
+            var response = await client.GetAsync(request);
+            response.Request = null;
+            response.ContentType = null;
+            response.ContentHeaders = null;
+            response.ContentEncoding = null;
+            response.Headers = null;
 
             return Json(response);
         }
@@ -39,7 +44,12 @@ namespace SocialNetworkMovies.Controllers
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", "Bearer " + key);
-            var response = JsonSerializer.Serialize(await client.GetAsync(request));
+            var response = await client.GetAsync(request);
+            response.Request = null;
+            response.ContentType = null;
+            response.ContentHeaders = null;
+            response.ContentEncoding = null;
+            response.Headers = null;
 
             return Json(response);
         }
@@ -52,7 +62,12 @@ namespace SocialNetworkMovies.Controllers
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", "Bearer " + key);
-            var response = JsonSerializer.Serialize(await client.GetAsync(request));
+            var response = await client.GetAsync(request);
+            response.Request = null;
+            response.ContentType = null;
+            response.ContentHeaders = null;
+            response.ContentEncoding = null;
+            response.Headers = null;
 
             return Json(response);
         }

@@ -11,7 +11,7 @@ $(document).ready(function(){
                         url: "/Movies/GetMovieId/" + element.MovieId,
                         type: "GET",
                         success: function(data){
-                        var content = JSON.parse(JSON.parse(data).Content);
+                            var content = JSON.parse(data.content)
                             if (content.adult != undefined){
                                 //TODO add user info here
                                 $(".displayDiscussions").append("<a href=\"Discussion/Details/" + element.Id+ "\"><p>" + element.Text + " - Posted At " + formatDate(element.DatePosted) + " By </p></a>")

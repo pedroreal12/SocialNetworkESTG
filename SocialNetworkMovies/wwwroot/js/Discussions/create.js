@@ -5,7 +5,7 @@ $(document).ready(function() {
             url: '/Movies/GetMovieByTitle?title=' + encodeURIComponent(movieName),
             type: 'GET',
             success: function(data) {
-            var content = JSON.parse(JSON.parse(data).Content);
+                var content = JSON.parse(data.content)
                 if (content.results.length > 0) {
                     $("#idMovie").find("option").remove().end()
                     content.results.forEach(function(element){
