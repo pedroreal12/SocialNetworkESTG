@@ -9,7 +9,7 @@ $(document).ready(function() {
         url: '/Movies/GetMovieId/' + Id,
         type: 'GET',
         success: function(data) {
-            var content = JSON.parse(JSON.parse(data).Content);
+            var content = JSON.parse(data.content)
             if (content.adult != undefined) {
                 console.log(content)
                 $(".movieDetails").append("<a href=\"" + content.homepage + "\"><img src=\"" + imageUrl + content.backdrop_path + "\"></img></a>")
