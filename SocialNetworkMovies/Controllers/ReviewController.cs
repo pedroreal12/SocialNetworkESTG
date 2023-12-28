@@ -1,14 +1,43 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using SocialNetworkMovies.Models;
 
 namespace SocialNetworkMovies.Controllers
 {
     public class ReviewController : Controller
     {
+        private readonly SndbContext context = new();
         // GET: ReviewController
         public ActionResult Index()
         {
             return View();
+        }
+
+        public JsonResult PostReview(int Value, int IdMovie, int FkIdComment)
+        {
+            try
+            {
+                Review review = new()
+                {
+                    FkIdMovie = IdMovie,
+                    IntValue = Value,
+                    FkIdComment = FkIdComment,
+                    DateCreated = DateTime.Now,
+                    DateLastChanged = DateTime.Now,
+                    StrState = "Ativo"
+                };
+
+                // Add the new object to the Orders collection.
+                context.Reviews.Add(review);
+                context.SaveChanges();
+                return Json("{\"success\": true}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("{\"success\": false}");
+            }
         }
 
         // GET: ReviewController/Details/5

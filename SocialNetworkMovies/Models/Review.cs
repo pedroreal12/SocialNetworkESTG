@@ -18,4 +18,6 @@ public partial class Review
     public string? FkIdUserCreated { get; set; }
 
     public int? IntValue { get; set; }
+
+    public int? FkIdComment { get; set; }
 }

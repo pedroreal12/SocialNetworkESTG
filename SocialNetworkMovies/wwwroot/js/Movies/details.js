@@ -11,27 +11,26 @@ $(document).ready(function() {
         success: function(data) {
             var content = JSON.parse(data.content)
             if (content.adult != undefined) {
-                console.log(content)
                 $(".movieDetails").append("<a href=\"" + content.homepage + "\"><img src=\"" + imageUrl + content.backdrop_path + "\"></img></a>")
                 $("#title").html("<a href=\"" + content.homepage + "\"<h4 id=\"title\">" + content.original_title + "</h4></a>")
                 $(".movieDetails").append("<p>Overview " + content.overview + "</p>")
                 $(".movieDetails").append("<p>Release Date " + content.release_date + "</p>")
-                if (content.adult){
+                if (content.adult) {
                     $(".movieDetails").append("<p>Rated R Movie</p>")
                 } else {
                     $(".movieDetails").append("<p>Movie for the whole family</p>")
                 }
-                content.genres.forEach(function(element){
+                content.genres.forEach(function(element) {
                     $(".movieDetails").append("<p>Genres " + element.name + "</p>")
                 })
                 if (content.belongs_to_collection != null) {
                     $(".movieDetails").append("<p>Collections Name " + content.belongs_to_collection.name + "</p>")
                 }
-                content.production_companies.forEach(function(element){
-                    $(".movieDetails").append("<p>Production Companie Name " + element.name  + "</p>")
+                content.production_companies.forEach(function(element) {
+                    $(".movieDetails").append("<p>Production Companie Name " + element.name + "</p>")
                 })
-                content.production_countries.forEach(function(element){
-                    $(".movieDetails").append("<p>Production Country " + element.name  + "</p>")
+                content.production_countries.forEach(function(element) {
+                    $(".movieDetails").append("<p>Production Country " + element.name + "</p>")
                 })
                 $(".movieDetails").append("<p>Budget " + content.budget + " US$</p>")
                 $(".movieDetails").append("<p>Revenue " + content.revenue + " US$</p>")
@@ -45,4 +44,70 @@ $(document).ready(function() {
             alert("Error: " + error);
         }
     })
+    $("#addReview").click(function() {
+        var html = "<br><div class=\"row\"><textarea id=\"commentText\"></textarea></div><div class=\"btn-group\">"
+        for (let i = 1; i <= 10; i++) {
+            html += "<button class=\"btn btn-link\"id=\"star_" + i + "\" onClick=\"postReview(this.id)\">" + i + "*</button>"
+        }
+        html += "<button class=\"btn btn-danger\" id=\"cancelReview\">Cancel Review</button>"
+        html += "</div>"
+        $(".actions").append(html)
+        $("#addReview").attr("hidden", "hidden")
+        $("#cancelReview").click(function() {
+            $(".btn-group").children().remove()
+            $(".btn-group").remove()
+            $(".actions").children("br").remove()
+            $("#commentText").remove()
+            $("#cancelReview").attr("hidden", "hidden")
+            $("#addReview").removeAttr("hidden")
+        })
+    })
 });
+
+function isCommentFullfilled() {
+    if ($("#commentText").val() == ""){
+        return false
+    }
+    return true
+}
+
+function postReview(valueReview) {
+    valueReview = valueReview.split("_")[1]
+    if(!isCommentFullfilled()){
+        return alert("Please, provide a comment for the review")
+    }
+    data = {
+        TextComment: $("#commentText").val()
+    }
+    $.ajax({
+        url: "/Comment/PostComment",
+        type: "POST",
+        data: data,
+        success: function(data) {
+            var content = JSON.parse(data)
+            if (content.success) {
+                $.ajax({
+                    url: "/Review/PostReview/?Value=" + valueReview + "&&IdMovie=" + Id + "&&FkIdComment=" + content.commentId,
+                    type: "GET",
+                    success: function(data) {
+                        var content = JSON.parse(data)
+                        if (content.success) {
+                            alert("Review Posted successfully!")
+                            location.reload()
+                        } else {
+                            alert("Error on posting review")
+                        }
+                    },
+                    error: function(error) {
+                        alert("Error: " + error)
+                    }
+                })
+            } else {
+                alert("Error on posting the Review's comment. Try again later")
+            }
+        },
+        error: function() {
+            alert("Error: " + error)
+        }
+    })
+}

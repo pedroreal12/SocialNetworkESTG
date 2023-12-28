@@ -77,6 +77,7 @@ function postComment(idTextArea) {
             var content = JSON.parse(data)
             if (content.data) {
                 alert("Comment posted successfully!")
+                location.reload()
             } else {
                 alert("Error on posting comment. Try this later")
             }
@@ -160,6 +161,7 @@ function postReply(idReply) {
             console.log(content)
             if (content.success != "false") {
                 alert("Reply Posted Successfuly")
+                location.reload()
             } else {
                 alert("Error on posting the reply. Try this later")
             }

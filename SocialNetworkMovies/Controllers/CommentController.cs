@@ -136,8 +136,8 @@ namespace SocialNetworkMovies.Controllers
                 Comment comment = new()
                 {
                     StrName = "Remove this later",
-                    FkIdDiscussion = int.Parse(collection["IdDiscussion"]),
-                    TextComment = collection["Text"],
+                    FkIdDiscussion = !string.IsNullOrEmpty(collection["IdDiscussion"]) ? int.Parse(collection["IdDiscussion"]) : null,
+                    TextComment = collection["TextComment"],
                     DateCreated = DateTime.Now,
                     DateLastChanged = DateTime.Now,
                     StrState = "Activo"
@@ -146,12 +146,12 @@ namespace SocialNetworkMovies.Controllers
                 // Add the new object to the Orders collection.
                 context.Comments.Add(comment);
                 context.SaveChanges();
-                return Json("{\"success\": \"true\"}");
+                return Json("{\"success\": true, \"commentId\":" + comment.Id + "}");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("{\"success\": \"false\"}");
+                return Json("{\"success\": false}");
             }
 
         }
