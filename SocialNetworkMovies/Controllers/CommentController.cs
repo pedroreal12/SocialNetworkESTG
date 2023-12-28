@@ -76,7 +76,7 @@ namespace SocialNetworkMovies.Controllers
             return Json(data);
         }
 
-        public JsonResult GetReplies(int IdDiscussion, int IdCommentParent, int Pagination)
+        public JsonResult GetReplies(int IdDiscussion, int idReply, int Pagination)
         {
             var replies = (from r in context.Comments
                            join d in context.Discussions
@@ -88,7 +88,7 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
-                           }).Where(r => r.FkIdDiscussion == IdDiscussion && r.IdCommentParent == IdCommentParent)
+                           }).Where(r => r.FkIdDiscussion == IdDiscussion && r.IdCommentParent == idReply)
                             .OrderByDescending(r => r.IdComment)
                             .Skip(Pagination * 10).Take(10).ToList();
 
