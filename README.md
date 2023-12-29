@@ -34,7 +34,12 @@ This project was done in the context of Web Programming class
 5. Now go onto the nuget package manager console in visual studio and run the following command "Scaffold-DbContext "Your connection string" Microsoft.EntityFrameworkCore.SqlServer -Outputdir Models"
     - Your connection string should be something like this: "Server=localhost, 1433;Database=sndb;User Id=SA;Password=A&VeryComplex123Password;TrustServerCertificate=True;MultipleActiveResultSets=true"
     - Have in mind that if you have an SQL Server instance running or any SQL Service service at all you might need to shutdown thoses services down as they will most likely be using the port 1433
-6. Setup identity
+6. Open and file appsettings.json and:
+    - Add a value with the ConnectionString that you just used
+    - Add another value with a connectrion string for you identity database
+7. Add these connectionStrings to your Program.cs
+    - Have a look at my [Program.cs](https://github.com/pedroreal12/SocialNetworkESTG/blob/main/SocialNetworkMovies/Program.cs) to have a better idea of how it should look like
+8. Setup identity
     - Inside Visual Studio right click on the project file name 
     - Go to "Add"
     - Click on New Scaffolded Item
@@ -42,4 +47,4 @@ This project was done in the context of Web Programming class
     - You can choose the files you wish to use or even just override all files
     - Then click on the "+" icon at DbContext class and create a new class. This class will be used in your identity, then the same for your database provider and User class
     - Open the class file that you just created wich should be in Areas/Identity/Data (in my case is the class SocialNetworkMoviesContext) and create a constructor for this class with the same name the class has
-7. Press the play button and you should be good to go with your development
+9. Press the play button and you should be good to go with your development
