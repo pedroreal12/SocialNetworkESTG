@@ -57,7 +57,6 @@ namespace SocialNetworkMovies.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMovieId(int Id)
         {
-            Console.WriteLine("ID: " + Id);
             /* regex for emails: ((\w)|(\W))*\@@ipportalegre\.pt */
             var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + Id);
             var client = new RestClient(options);
