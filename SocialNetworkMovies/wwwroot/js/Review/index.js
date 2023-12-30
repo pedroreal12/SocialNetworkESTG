@@ -12,7 +12,7 @@ function loadReviews() {
             var content = JSON.parse(data)
             if (content.length > 0) {
                 content.forEach(function(element) {
-                    $(".listReviews").append("<a href=\"/Review/Details/" + element.Id + "\">" + element.Text + " - Posted at " + formatDate(element.DatePosted) + "</a><br>")
+                        $(".listReviews").append("<a href=\"/Review/Details/" + element.Id + "\">" + element.Text + " - Posted at " + formatDate(element.DatePosted) + "</a><br>")
                 })
                 $(".listReviews").append("<button class=\"btn btn-link\" onClick=\"loadReviews()\" id=\"loadReviews\">Load more reviews</button>")
                 Pagination += 1
