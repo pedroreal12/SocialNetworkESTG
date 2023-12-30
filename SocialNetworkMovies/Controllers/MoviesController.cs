@@ -54,10 +54,12 @@ namespace SocialNetworkMovies.Controllers
             return Json(response);
         }
 
-        public async Task<IActionResult> GetMovieId(int id)
+        [HttpGet]
+        public async Task<IActionResult> GetMovieId(int Id)
         {
+            Console.WriteLine("ID: " + Id);
             /* regex for emails: ((\w)|(\W))*\@@ipportalegre\.pt */
-            var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + id + "?language=en-US");
+            var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + Id);
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
