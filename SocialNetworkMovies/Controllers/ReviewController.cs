@@ -14,6 +14,43 @@ namespace SocialNetworkMovies.Controllers
             return View();
         }
 
+        public JsonResult GetReviews(int Pagination)
+        {
+            Console.WriteLine("Pagination: " + Pagination);
+            var reviews = (from r in context.Reviews
+                           join c in context.Comments
+                           on r.FkIdComment equals c.Id
+                           select new
+                           {
+                               Id = r.Id,
+                               IdMovie = r.FkIdMovie,
+                               Text = c.TextComment,
+                               Value = r.IntValue,
+                               DatePosted = c.DateCreated,
+                               StrState = r.StrState
+                           }).OrderByDescending(r => r.Id).Where(r => r.StrState == "Ativo").Skip(Pagination * 10).Take(10).ToList();
+            var data = JsonSerializer.Serialize(reviews);
+            return Json(data);
+        }
+
+        public JsonResult GetDetails(int Id)
+        {
+            var reviews = (from r in context.Reviews
+                           join c in context.Comments
+                           on r.FkIdComment equals c.Id
+                           select new
+                           {
+                               Id = r.Id,
+                               IdMovie = r.FkIdMovie,
+                               Text = c.TextComment,
+                               Value = r.IntValue,
+                               DatePosted = c.DateCreated,
+                               StrState = r.StrState
+                           }).OrderByDescending(r => r.Id).Where(r => r.StrState == "Ativo" && r.Id == Id).ToList();
+            var data = JsonSerializer.Serialize(reviews);
+            return Json(data);
+        }
+
         public JsonResult PostReview(int Value, int IdMovie, int FkIdComment)
         {
             try
