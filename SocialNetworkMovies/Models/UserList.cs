@@ -19,6 +19,8 @@ public partial class UserList
 
     public string? HashUrl { get; set; }
 
+    public string FkIdUserCreated { get; set; } = null!;
+
     public virtual Comment? FkIdMovieListNavigation { get; set; }
 
     public virtual ICollection<MovieList> MovieLists { get; set; } = new List<MovieList>();
