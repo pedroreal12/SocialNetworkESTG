@@ -67,7 +67,7 @@ function postComment(idTextArea) {
 
     var data = {
         IdDiscussion: Id,
-        Text: $("#textareaComment_" + idTextArea[1]).val()
+        TextComment: $("#textareaComment_" + idTextArea[1]).val()
     }
     $.ajax({
         url: "/Comment/PostComment",
@@ -75,7 +75,7 @@ function postComment(idTextArea) {
         data: data,
         success: function(data) {
             var content = JSON.parse(data)
-            if (content.data) {
+            if (content.success) {
                 alert("Comment posted successfully!")
                 location.reload()
             } else {
@@ -111,7 +111,7 @@ function loadMoreComments() {
             var content = JSON.parse(data)
             var comments = content.Comments
             var replies = content.Replies
-            if (comments.length > 0 && replies.length > 0) {
+            if (comments.length > 0 || replies.length > 0) {
                 comments.forEach(function(comment) {
                     //TODO: Add user created
                     var html = "<div id=\"commentSection_" + comment.IdComment + "\">"
