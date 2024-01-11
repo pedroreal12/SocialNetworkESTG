@@ -38,7 +38,6 @@ GO
     FkIdUserLastChanged INT FOREIGN KEY REFERENCES Users(Id),
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE Roles (
@@ -49,7 +48,6 @@ CREATE TABLE Roles (
     FkIdUserCreated INT FOREIGN KEY REFERENCES Users(Id),
     FkIdUserLastChanged INT FOREIGN KEY REFERENCES Users(Id),
     StrState VARCHAR(20) NOT NULL,
-    HashURL VARCHAR(255),
 );
 
 ALTER TABLE Users
@@ -64,7 +62,6 @@ CREATE TABLE Actions (
     DateLastChanged DATETIME NOT NULL,
     FkIdUserCreated INT FOREIGN KEY REFERENCES Users(Id),
     FkIdUserLastChanged INT FOREIGN KEY REFERENCES Users(Id),
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE Permissions (
@@ -76,7 +73,6 @@ CREATE TABLE Permissions (
     DateLastChanged DATETIME NOT NULL,
     FkIdUserCreated INT FOREIGN KEY REFERENCES Users(Id),
     FkIdUserLastChanged INT FOREIGN KEY REFERENCES Users(Id),
-    HashURL VARCHAR(255)
 );*/
 
 CREATE TABLE Review(
@@ -98,7 +94,6 @@ CREATE TABLE Administrator (
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE Professor (
@@ -121,7 +116,6 @@ CREATE TABLE Student (
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE Discussion (
@@ -132,7 +126,6 @@ CREATE TABLE Discussion (
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE Comment (
@@ -144,7 +137,6 @@ CREATE TABLE Comment (
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE UserList (
@@ -155,7 +147,6 @@ CREATE TABLE UserList (
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
 
 CREATE TABLE MovieList (
@@ -165,5 +156,4 @@ CREATE TABLE MovieList (
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
-    HashURL VARCHAR(255)
 );
