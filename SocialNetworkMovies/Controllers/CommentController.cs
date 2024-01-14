@@ -43,6 +43,7 @@ namespace SocialNetworkMovies.Controllers
         [HttpGet]
         public JsonResult LoadCommentsDiscussion(int Id, int Pagination)
         {
+            Console.WriteLine(Id);
             var comments = (from c in context.Comments
                             join d in context.Discussions
                             on c.FkIdDiscussion equals d.Id

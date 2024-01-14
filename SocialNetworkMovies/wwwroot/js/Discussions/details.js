@@ -111,22 +111,19 @@ function loadMoreComments() {
             var content = JSON.parse(data)
             var comments = content.Comments
             var replies = content.Replies
-            if (comments.length > 0 || replies.length > 0) {
+            if (comments.length > 0) {
                 comments.forEach(function(comment) {
                     //TODO: Add user created
                     var html = "<div id=\"commentSection_" + comment.IdComment + "\">"
                     html += "<div class=\"row\">"
                     html += "<textarea disabled=\"disabled\">" + comment.TextComment + "</textarea> At " + formatDate(comment.DatePosted) + "";
-                    if (replies.length > 0) {
-                        replies.forEach(function(reply) {
-                            if ((reply.IdCommentParent == comment.IdComment)) {
-
-                                html += "<button class=\"btn btn-link\" id=\"showReplies_" + reply.IdCommentParent + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
-                                html += "<button class=\"btn btn-link\" id=\"hideReplies_" + reply.IdCommentParent + "\" hidden=\"hidden\" onClick=\"hideReplies(this.id, " + reply.IdCommentParent + ")\">Hide Replies</button>"
-                                PaginationReplies[comment.IdComment] = 0
-                            }
-                        })
-                    }
+                    replies.forEach(function(reply) {
+                        if (comment.IdComment == reply.IdCommentParent){
+                            html += "<button class=\"btn btn-link\" id=\"showReplies_" + comment.IdComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
+                            html += "<button class=\"btn btn-link\" id=\"hideReplies_" + comment.IdComment + "\" hidden=\"hidden\" onClick=\"hideReplies(" + reply.IdComment + ", this.id)\">Hide Replies</button>"
+                        }
+                        PaginationReplies[comment.IdComment] = 0
+                    })
                     html += "<button class=\"btn btn-link\" id=\"replyComment_" + comment.IdComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
                     html += "<button class=\"btn btn-link\" id=\"postReply_" + comment.IdComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
                     html += "</div></div>"
@@ -174,6 +171,8 @@ function postReply(idReply) {
 
 function showReplies(idReply) {
     idReply = idReply.split("_")[1]
+    $("#showReplies_" + idReply).attr("hidden", "hidden")
+    $("#hideReplies_" + idReply).removeAttr("hidden")
     PaginationReplies[idReply] = PaginationReplies[idReply] != NaN ? 0 : PaginationReplies[idReply]
     $.ajax({
         url: "/Comment/GetReplies/?IdDiscussion=" + Id + "&&IdReply=" + idReply + "&&Pagination=" + PaginationReplies[idReply],
@@ -186,8 +185,8 @@ function showReplies(idReply) {
                     html += "<button class=\"btn btn-link\" id=\"replyComment_" + reply.IdComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
                     html += "<button class=\"btn btn-link\" id=\"postReply_" + reply.IdComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
                     html += "<button class=\"btn btn-link\" id=\"showReplies_" + reply.IdComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
-                    html += "<button class=\"btn btn-link\" id=\"hideReplies_" + reply.IdComment + "\" hidden=\"hidden\" onClick=\"hideReplies(this.id, " + reply.IdComment + ")\">Hide Replies</button>"
-                    html += "</div></div></div></div>"
+                    html += "<button class=\"btn btn-link\" id=\"hideReplies_" + reply.IdComment + "\" hidden=\"hidden\" onClick=\"hideReplies(" + reply.IdCommentParent + ", this.id)\">Hide Replies</button>"
+                    html += "</div></div>"
                     $("#commentSection_" + reply.IdCommentParent).append(html)
                 })
                 PaginationReplies[idReply] += 1
@@ -201,11 +200,12 @@ function showReplies(idReply) {
     })
 }
 
-function hideReplies(idCommentParent, idReply = -1) {
+function hideReplies(idReply = -1, idCommentParent) {
     idCommentParent = idCommentParent.split("_")[1]
     //PaginationReplies[idCommentParent] -= 1
     $("#hideReplies_" + idCommentParent).attr("hidden", "hidden")
     $("#showReplies_" + idCommentParent).removeAttr("hidden")
+
     if (idReply != -1) {
         $("#commentSection_" + idReply).children().remove()
         $("#commentSection_" + idReply).remove()

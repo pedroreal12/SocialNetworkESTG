@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("#btnSearch").click(function() {
+    $("#btnSearchDiscussion").click(function() {
         var movieName = $("#movieSearch").val()
         $.ajax({
             url: '/Movies/GetMovieByTitle?title=' + encodeURIComponent(movieName),
