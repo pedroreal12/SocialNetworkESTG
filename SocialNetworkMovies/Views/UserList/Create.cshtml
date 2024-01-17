@@ -18,25 +18,6 @@
                 <span asp-validation-for="StrName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FkIdMovieList" class="control-label"></label>
-                <select asp-for="FkIdMovieList" class ="form-control" asp-items="ViewBag.FkIdMovieList"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="StrState" class="control-label"></label>
-                <input asp-for="StrState" class="form-control" />
-                <span asp-validation-for="StrState" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateLastChanged" class="control-label"></label>
-                <input asp-for="DateLastChanged" class="form-control" />
-                <span asp-validation-for="DateLastChanged" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
