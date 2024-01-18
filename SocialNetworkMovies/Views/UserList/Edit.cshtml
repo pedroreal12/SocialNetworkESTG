@@ -14,32 +14,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="StrName" class="control-label"></label>
-                <input asp-for="StrName" class="form-control" />
+                <label asp-for="StrName" class="control-label">List Name</label>
+                <input asp-for="StrName" id="strListName" class="form-control" />
                 <span asp-validation-for="StrName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FkIdMovieList" class="control-label"></label>
-                <select asp-for="FkIdMovieList" class="form-control" asp-items="ViewBag.FkIdMovieList"></select>
-                <span asp-validation-for="FkIdMovieList" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StrState" class="control-label"></label>
-                <input asp-for="StrState" class="form-control" />
-                <span asp-validation-for="StrState" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateCreated" class="control-label"></label>
-                <input asp-for="DateCreated" class="form-control" />
-                <span asp-validation-for="DateCreated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateLastChanged" class="control-label"></label>
-                <input asp-for="DateLastChanged" class="form-control" />
-                <span asp-validation-for="DateLastChanged" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" id="editUserList" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -51,4 +31,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" src="~/js/UserList/edit.js"></script>
 }

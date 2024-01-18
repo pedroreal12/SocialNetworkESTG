@@ -5,11 +5,13 @@ using SocialNetworkMovies.Data;
 using System.Text.Json;
 using SocialNetworkMovies.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using RestSharp;
 
 namespace SocialNetworkMovies.Controllers
 {
     public class MovieListController : Controller
     {
+        readonly static string key = SocialNetworkMovies.FileHandler.FileHandler.readFile();
         private readonly SndbContext context = new();
         private readonly UserManager<SocialNetworkMoviesUser> _userManager;
 
@@ -24,15 +26,70 @@ namespace SocialNetworkMovies.Controllers
         }
 
         // GET: MovieListController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int Id)
         {
             return View();
+        }
+
+        public async Task<JsonResult> GetMoviesByListId(int IdMovieList)
+        {
+            var movieList = (from ml in context.MovieLists
+                             join ul in context.UserLists
+                             on ml.FkIdList equals ul.Id
+                             select new
+                             {
+                                 IdMovie = ml.FkIdMovie,
+                                 IdUserList = ul.Id,
+                             }).Take(10).ToList();
+            string data = "";
+            foreach (var ml in movieList)
+            {
+                var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + ml.IdMovie);
+                var client = new RestClient(options);
+                var request = new RestRequest("");
+                request.AddHeader("accept", "application/json");
+                request.AddHeader("Authorization", "Bearer " + key);
+                var response = await client.GetAsync(request);
+                response.Request = null;
+                response.ContentType = null;
+                response.ContentHeaders = null;
+                response.ContentEncoding = null;
+                response.Headers = null;
+                data += JsonSerializer.Serialize(response);
+            }
+            return Json(data);
         }
 
         // GET: MovieListController/Create
         public ActionResult Create()
         {
             return View();
+        }
+
+        public JsonResult AddMovieToUserList(int IdUserList, int IdMovie)
+        {
+            try
+            {
+                string userId = _userManager.GetUserId(User);
+                MovieList movieList = new()
+                {
+                    FkIdList = IdUserList,
+                    FkIdMovie = IdMovie,
+                    DateCreated = DateTime.Now,
+                    DateLastChanged = DateTime.Now,
+                    StrState = "Ativo",
+                    FkIdUserCreated = userId,
+                };
+
+                context.MovieLists.Add(movieList);
+                context.SaveChanges();
+                return Json("{\"success\": true}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("{\"success\": false}");
+            }
         }
 
         // POST: MovieListController/Create

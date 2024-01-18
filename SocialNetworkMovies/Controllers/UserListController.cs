@@ -33,13 +33,15 @@ namespace SocialNetworkMovies.Controllers
                          select new
                          {
                              IdList = l.Id,
-                             StrNameList = l.StrName
+                             StrNameList = l.StrName,
+                             DateCreated = l.DateCreated
                          }).OrderByDescending(l => l.IdList).Take(10).ToList();
 
             string data = JsonSerializer.Serialize(lists);
             return Json(data);
         }
 
+        [HttpGet]
         public JsonResult GetListById(int Id)
         {
             string userId = _userManager.GetUserId(User);
@@ -60,31 +62,42 @@ namespace SocialNetworkMovies.Controllers
         // GET: UserListController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            UserList UserList = context.UserLists.Find(id);
+            return View(UserList);
         }
 
         // GET: UserListController/Create
+        [HttpGet]
         public ActionResult Create()
         {
             return View();
         }
 
-        public JsonResult PostReview(int Value, int IdMovie, int FkIdComment)
+        // POST: UserListController/Create
+        [HttpPost]
+        public JsonResult Create(IFormCollection collection)
         {
             try
             {
-                Review review = new()
+                Console.WriteLine("Name: " + collection["StrListName"]);
+                string userId = _userManager.GetUserId(User);
+                string StrListName = collection?["StrListName"] ?? "";
+
+                if (StrListName == "")
                 {
-                    FkIdMovie = IdMovie,
-                    IntValue = Value,
-                    FkIdComment = FkIdComment,
+                    return Json("{\"success\": false}");
+                }
+
+                UserList userList = new()
+                {
+                    StrName = StrListName,
                     DateCreated = DateTime.Now,
                     DateLastChanged = DateTime.Now,
-                    StrState = "Ativo"
+                    StrState = "Ativo",
+                    FkIdUserCreated = userId,
                 };
 
-                // Add the new object to the Orders collection.
-                context.Reviews.Add(review);
+                context.UserLists.Add(userList);
                 context.SaveChanges();
                 return Json("{\"success\": true}");
             }
@@ -95,64 +108,52 @@ namespace SocialNetworkMovies.Controllers
             }
         }
 
-        // POST: UserListController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                UserList userList = new UserList()
-                {
-                };
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         // GET: UserListController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            UserList UserList = context.UserLists.Find(id);
+            return View(UserList);
         }
 
         // POST: UserListController/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public JsonResult Edit(int Id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                string StrListName = collection?["StrListName"] ?? "";
+
+                if (StrListName == "")
+                {
+                    return Json("{\"success\": false}");
+                }
+                UserList UserList = context.UserLists.Find(Id);
+                if (UserList == null)
+                {
+                    return Json("{\"success\": false}");
+                }
+                UserList.StrName = StrListName;
+                context.Update(UserList);
+                context.SaveChanges();
+                return Json("{\"success\": true}");
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                Console.WriteLine(e);
+                return Json("{\"success\": false}");
             }
         }
 
         // GET: UserListController/Delete/5
-        public ActionResult Delete(int id)
+        public JsonResult Delete(int id)
         {
-            return View();
-        }
-
-        // POST: UserListController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            UserList UserList = context.UserLists.Find(id);
+            if (UserList == null)
             {
-                return RedirectToAction(nameof(Index));
+                return Json("{\"success\": false}");
             }
-            catch
-            {
-                return View();
-            }
+            UserList.StrState = "Apagado";
+            return Json("{\"success\": true}");
         }
     }
 }
