@@ -153,7 +153,6 @@ namespace SocialNetworkMovies.Controllers
                 Console.WriteLine(e);
                 return Json("{\"success\": false}");
             }
-
         }
 
         // GET: CommentController/Create
