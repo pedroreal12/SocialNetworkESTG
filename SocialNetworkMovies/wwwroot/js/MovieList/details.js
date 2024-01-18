@@ -6,14 +6,19 @@ $(document).ready(function() {
 
     $.ajax({
         type: "GET",
-        url: "/Details/" + Id,
+        url: "/MovieList/GetMoviesByListId/" + Id,
         success: function(data) {
             var content = JSON.parse(data)
-            if (content.Id != undefined) {
-                $("#displayList").append()
+            if (content.length > 0) {
+                content.forEach(function(element) {
+                    console.log(element)
+                })
+                /*<dd class = "col-sm-10">
+                </dd>*/
+                $("#movieDisplayer").append()
             }
         },
-        error: function(error){
+        error: function(error) {
             alert("Error: " + error)
         }
     })
