@@ -23,7 +23,7 @@ function getMovie() {
                 alert("Error on loading movie. Try this later")
             }
         },
-        error: function() {
+        error: function(error) {
             alert("Error: " + error)
         }
     })
