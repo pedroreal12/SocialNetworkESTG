@@ -41,6 +41,19 @@ namespace SocialNetworkMovies.Controllers
             return Json(data);
         }
 
+        public JsonResult GetListsByUser()
+        {
+            string userId = _userManager.GetUserId(User);
+            var UserLists = (from ul in context.UserLists
+                             select new
+                             {
+                                 IdUserList = ul.Id,
+                                 StrListName = ul.StrName,
+                                 IdUserCreated = ul.FkIdUserCreated
+                             }).Where(ul => ul.IdUserCreated == userId).ToList();
+            return Json(UserLists);
+        }
+
         [HttpGet]
         public JsonResult GetListById(int Id)
         {
@@ -79,7 +92,6 @@ namespace SocialNetworkMovies.Controllers
         {
             try
             {
-                Console.WriteLine("Name: " + collection["StrListName"]);
                 string userId = _userManager.GetUserId(User);
                 string StrListName = collection?["StrListName"] ?? "";
 

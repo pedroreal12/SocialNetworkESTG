@@ -60,12 +60,6 @@ namespace SocialNetworkMovies.Controllers
             return Json(data);
         }
 
-        // GET: MovieListController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
         public JsonResult AddMovieToUserList(int IdUserList, int IdMovie)
         {
             try

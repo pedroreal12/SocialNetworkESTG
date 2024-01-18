@@ -44,6 +44,7 @@ $(document).ready(function() {
             alert("Error: " + error);
         }
     })
+
     $("#addReview").click(function() {
         var html = "<br><div class=\"row\"><textarea id=\"commentText\"></textarea></div><div class=\"btn-group\">"
         for (let i = 1; i <= 10; i++) {
@@ -62,10 +63,59 @@ $(document).ready(function() {
             $("#addReview").removeAttr("hidden")
         })
     })
+
+    $("#addToUserList").click(function() {
+        $.ajax({
+            url: "/UserList/GetListsByUser",
+            type: "GET",
+            success: function(data) {
+                if (data.length > 0) {
+                    $("#userList").children().remove();
+                    data.forEach(function(element) {
+                        $("#userList").append("<option value=\"" + element.idUserList + "\">" + element.strListName + "</option>");
+                    });
+                    $("#addToUserList").attr("hidden", "hidden");
+                    $("#userList").removeAttr("hidden");
+                    $("#cancelUserList").removeAttr("hidden");
+                    $("#submitToUserList").removeAttr("hidden", "hidden")
+                } else {
+                    alert("No lists were found, go to Lists and create a new list to use this feature.");
+                }
+            },
+            error: function(error) {
+                alert("Error: " + error)
+            }
+        })
+    });
+
+    $("#cancelUserList").click(function() {
+        $("#addToUserList").removeAttr("hidden")
+        $("#userList").attr("hidden", "hidden")
+        $("#cancelUserList").attr("hidden", "hidden")
+        $("#submitToUserList").attr("hidden", "hidden")
+    })
+
+    $("#submitToUserList").click(function() {
+        $.ajax({
+            url: "/MovieList/AddMovieToUserList/?IdUserList=" + $("#userList").val() + "&IdMovie=" + Id,
+            type: "GET",
+            success: function(data) {
+                var content = JSON.parse(data);
+                if (content.success) {
+                    alert("Added Movie to list successfully!");
+                } else {
+                    alert("Error on adding Movie to the list");
+                }
+            },
+            error: function(error) {
+                alert("Error: " + error)
+            }
+        })
+    })
 });
 
 function isCommentFullfilled() {
-    if ($("#commentText").val() == ""){
+    if ($("#commentText").val() == "") {
         return false
     }
     return true
@@ -73,7 +123,7 @@ function isCommentFullfilled() {
 
 function postReview(valueReview) {
     valueReview = valueReview.split("_")[1]
-    if(!isCommentFullfilled()){
+    if (!isCommentFullfilled()) {
         return alert("Please, provide a comment for the review")
     }
     data = {
@@ -110,4 +160,6 @@ function postReview(valueReview) {
             alert("Error: " + error)
         }
     })
+
 }
+
