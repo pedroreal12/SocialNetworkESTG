@@ -119,12 +119,12 @@ namespace SocialNetworkMovies.Controllers
                 // Add the new object to the Orders collection.
                 context.Comments.Add(comment);
                 context.SaveChanges();
-                return Json("{\"success\": \"true\"}");
+                return Json("{\"success\": true}");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("{\"success\": \"false\"}");
+                return Json("{\"success\": false}");
             }
         }
 
