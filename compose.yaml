@@ -13,7 +13,7 @@ services:
       - 80:80
   sql:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: SNM_Database 
+    container_name: SNM_Database
     ports:
       - 1433:1433
     environment:
