@@ -103,6 +103,7 @@ $(document).ready(function() {
                 var content = JSON.parse(data);
                 if (content.success) {
                     alert("Added Movie to list successfully!");
+                    location.reload()
                 } else {
                     alert("Error on adding Movie to the list");
                 }
