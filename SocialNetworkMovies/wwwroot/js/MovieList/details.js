@@ -8,14 +8,15 @@ $(document).ready(function() {
         type: "GET",
         url: "/MovieList/GetMoviesByListId/" + Id,
         success: function(data) {
-            var content = JSON.parse(data)
-            if (content.length > 0) {
-                content.forEach(function(element) {
-                    console.log(element)
+            if (data.movieList != undefined || data.data != undefined) {
+                $("#strNameList").append(data.movieList[0].strListName)
+                $("#dateCreated").append(formatDate(data.movieList[0].dateCreated))
+                var html = "";
+                data.data.forEach(function(element) {
+                element = JSON.parse(element)
+                    html += "<dd class=\"col-sm-10\"><a href=\"" + element.homepage + "\">" + element.original_title + "</a></dd>"
                 })
-                /*<dd class = "col-sm-10">
-                </dd>*/
-                $("#movieDisplayer").append()
+                $("#movieDisplayer").append(html)
             }
         },
         error: function(error) {
@@ -23,3 +24,14 @@ $(document).ready(function() {
         }
     })
 })
+
+function formatDate(dateObj) {
+    var formattedDate = new Date(dateObj);
+    var d = formattedDate.getDate();
+    var m = formattedDate.getMonth();
+    m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var formatedDate = d + "/" + m + "/" + y
+
+    return formatedDate
+}

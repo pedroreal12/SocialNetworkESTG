@@ -40,24 +40,24 @@ namespace SocialNetworkMovies.Controllers
                              {
                                  IdMovie = ml.FkIdMovie,
                                  IdUserList = ul.Id,
+                                 StrListName = ul.StrName,
+                                 DateCreated = ul.DateCreated
                              }).Take(10).ToList();
-            string data = "";
-            foreach (var ml in movieList)
+            var data = Array.Empty<object>();
+            for (int i = 0; i < movieList.Count; i++)
             {
-                var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + ml.IdMovie);
+                var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + movieList[i].IdMovie);
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
                 request.AddHeader("Authorization", "Bearer " + key);
                 var response = await client.GetAsync(request);
-                response.Request = null;
-                response.ContentType = null;
-                response.ContentHeaders = null;
-                response.ContentEncoding = null;
-                response.Headers = null;
-                data += JsonSerializer.Serialize(response);
+                data = new[] { response.Content };
+                Console.WriteLine($"Data {i}: {data}");
+                Console.WriteLine($"Content: {response.Content}");
             }
-            return Json(data);
+            var objects = new { Data = data, MovieList = movieList };
+            return Json(objects);
         }
 
         public JsonResult AddMovieToUserList(int IdUserList, int IdMovie)
