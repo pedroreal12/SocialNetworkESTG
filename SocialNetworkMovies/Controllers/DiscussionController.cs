@@ -3,18 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 using SocialNetworkMovies.Models;
 using System.Diagnostics;
 using System.Text.Json;
+using SocialNetworkMovies.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace SocialNetworkMovies.Controllers
 {
     public class DiscussionController : Controller
     {
-        private readonly SndbContext context = new();
-        private readonly ILogger<DiscussionController> _logger;
+        private readonly SocialNetworkMovies.Data.SocialNetworkMoviesContext IdentityContext = new();
+        private readonly UserManager<SocialNetworkMoviesUser> _userManager;
 
-        public DiscussionController(ILogger<DiscussionController> logger)
+        public DiscussionController(UserManager<SocialNetworkMoviesUser> userManager)
         {
-            _logger = logger;
+            _userManager = userManager;
         }
+        private readonly SndbContext context = new();
 
         public IActionResult Index()
         {
@@ -37,13 +40,17 @@ namespace SocialNetworkMovies.Controllers
         public IActionResult GetDiscussionId(int Id)
         {
             //TODO: add user created
+            string userId = _userManager.GetUserId(User);
             var discussion = (from d in context.Discussions
+                              join u in IdentityContext.Users
+                              on d.FkIdUserCreated equals u.Id
                               select new
                               {
                                   Id = d.Id,
                                   MovieId = d.FkIdMovie,
                                   Text = d.StrText,
-                                  DatePosted = d.DateCreated
+                                  DatePosted = d.DateCreated,
+                                  StrUserName = u.UserName
                               }).Where(d => d.Id == Id).First();
             var data = JsonSerializer.Serialize(discussion);
             return Json(data);
@@ -55,13 +62,16 @@ namespace SocialNetworkMovies.Controllers
         {
             try
             {
+                string userId = _userManager.GetUserId(User);
                 Discussion discussion = new()
                 {
                     FkIdMovie = int.Parse(collection["idMovie"]),
                     StrText = collection["commentText"],
                     DateCreated = DateTime.Now,
                     DateLastChanged = DateTime.Now,
-                    StrState = "Activo"
+                    StrState = "Ativo",
+                    FkIdUserCreated = userId
+
                 };
 
                 // Add the new object to the Orders collection.
@@ -78,13 +88,14 @@ namespace SocialNetworkMovies.Controllers
 
         public JsonResult GetLastDiscussions()
         {
+            string userId = _userManager.GetUserId(User);
             var discussions = (from d in context.Discussions
                                select new
                                {
                                    Id = d.Id,
                                    MovieId = d.FkIdMovie,
                                    Text = d.StrText,
-                                   DatePosted = d.DateCreated
+                                   DatePosted = d.DateCreated,
                                }).OrderByDescending(d => d.Id)
             .Take(10).ToList();
             var data = JsonSerializer.Serialize(discussions);
@@ -93,13 +104,18 @@ namespace SocialNetworkMovies.Controllers
 
         public JsonResult GetLastDiscussionsNews()
         {
+            string userId = _userManager.GetUserId(User);
             var discussions = (from d in context.Discussions
+                               join u in IdentityContext.Users
+                               on d.FkIdUserCreated equals u.Id
+                               where d.FkIdUserCreated == userId
                                select new
                                {
                                    Id = d.Id,
                                    MovieId = d.FkIdMovie,
                                    Text = d.StrText,
-                                   DatePosted = d.DateCreated
+                                   DatePosted = d.DateCreated,
+                                   StrUserName = u.UserName
                                }).OrderByDescending(d => d.DatePosted)
             .Take(10).ToList();
             var data = JsonSerializer.Serialize(discussions);

@@ -23,4 +23,12 @@ public class SocialNetworkMoviesContext : IdentityDbContext<SocialNetworkMoviesU
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
     }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            // Use your preferred database provider and connection string here
+            optionsBuilder.UseSqlServer("Server=localhost, 1433;Database=snidentitydb;User Id=SA;Password=A&VeryComplex123Password;TrustServerCertificate=True;MultipleActiveResultSets=true");
+        }
+    }
 }

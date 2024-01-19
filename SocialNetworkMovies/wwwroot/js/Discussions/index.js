@@ -13,8 +13,7 @@ $(document).ready(function(){
                         success: function(data){
                             var content = JSON.parse(data.content)
                             if (content.adult != undefined){
-                                //TODO add user info here
-                                $(".displayDiscussions").append("<a href=\"Discussion/Details/" + element.Id+ "\"><p>" + element.Text + " - Posted At " + formatDate(element.DatePosted) + " By </p></a>")
+                                $(".displayDiscussions").append("<a href=\"Discussion/Details/" + element.Id+ "\"><p>" + element.Text + " - Posted At " + formatDate(element.DatePosted) + " By " + element.StrUserName + " </p></a>")
                                 $(".displayDiscussions").append("<img src=\"" + imageUrl + content.backdrop_path + "\"></img>")
                             }
                         },
