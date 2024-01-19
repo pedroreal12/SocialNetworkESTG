@@ -31,22 +31,62 @@ namespace SocialNetworkMovies.Controllers
             return View();
         }
 
-        public async Task<JsonResult> GetMoviesByListId(int IdMovieList)
+        [HttpGet]
+        public JsonResult RemoveMovieFromList(int IdMovieList, int IdMovie)
         {
+            if (IdMovieList <= 0)
+            {
+                return Json("{\"success\": true, \"message\": \"Movie List not valid\"}");
+            }
+
+            try
+            {
+                Console.WriteLine($"IdMovieList: {IdMovieList}\nIdMovie: {IdMovie}");
+                var movieListToRemove = context.MovieLists.Find(IdMovieList);
+                if (movieListToRemove == null)
+                {
+                    return Json("{\"success\": false, \"message\": \"Movie not Found\"}");
+                }
+                Console.WriteLine($"MovieList: {movieListToRemove}");
+                movieListToRemove.StrState = "Apagado";
+                context.Update(movieListToRemove);
+                context.SaveChanges();
+                return Json("{\"success\": true, \"message\": \"Movie Removed successfully from the list\"}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("{\"success\": false, \"message\": \"Error on removing movie from the list\"}");
+            }
+        }
+
+        public async Task<JsonResult> GetMoviesByListId(int IdUserList)
+        {
+            if (IdUserList <= 0)
+            {
+                return Json("{\"success\": false, \"message\": \"List not found\"}");
+            }
+            Console.WriteLine($"IdUserList: {IdUserList}");
             var movieList = (from ml in context.MovieLists
                              join ul in context.UserLists
                              on ml.FkIdList equals ul.Id
                              select new
                              {
+                                 IdMovieList = ml.Id,
                                  IdMovie = ml.FkIdMovie,
-                                 IdUserList = ul.Id,
+                                 IdUserList = ml.FkIdList,
                                  StrListName = ul.StrName,
-                                 DateCreated = ul.DateCreated
-                             }).ToList();
-            List<string> data = new List<string>();
-            for (int i = 0; i < movieList.Count; i++)
+                                 DateCreated = ul.DateCreated,
+                                 StrStatus = ml.StrState
+                             }).Where(ml => ml.StrStatus == "Ativo" && ml.IdUserList == IdUserList).ToList();
+            if (!movieList.Any())
             {
-                var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + movieList[i].IdMovie);
+                return Json("{\"success\": false, \"message\": \"List not found\"}");
+            }
+            List<string> data = new List<string>();
+            foreach (var ml in movieList)
+            {
+                var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + ml.IdMovie);
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
@@ -63,6 +103,19 @@ namespace SocialNetworkMovies.Controllers
         {
             try
             {
+                var movieListCheck = (from ml in context.MovieLists
+                                      join ul in context.UserLists
+                                      on ml.FkIdList equals ul.Id
+                                      select new
+                                      {
+                                          IdUserList = ml.FkIdList,
+                                          IdMovie = ml.FkIdMovie,
+                                          StrStatus = ml.StrState
+                                      }).Where(ml => ml.IdUserList == IdUserList && ml.IdMovie == IdMovie && ml.StrStatus == "Ativo").FirstOrDefault();
+                if (movieListCheck != null)
+                {
+                    return Json("{\"success\": false, \"message\": \"Movie is already in this list\"}");
+                }
                 string userId = _userManager.GetUserId(User);
                 MovieList movieList = new()
                 {
@@ -76,12 +129,12 @@ namespace SocialNetworkMovies.Controllers
 
                 context.MovieLists.Add(movieList);
                 context.SaveChanges();
-                return Json("{\"success\": true}");
+                return Json("{\"success\": true, \"message\": \"Movie successfully added to the list!\"}");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("{\"success\": false}");
+                return Json("{\"success\": false, \"message\": \"Error on adding movie to the list!\"}");
             }
         }
 
