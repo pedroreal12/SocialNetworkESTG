@@ -102,10 +102,10 @@ $(document).ready(function() {
             success: function(data) {
                 var content = JSON.parse(data);
                 if (content.success) {
-                    alert("Added Movie to list successfully!");
+                    alert(content.message);
                     location.reload()
                 } else {
-                    alert("Error on adding Movie to the list");
+                    alert(content.message);
                 }
             },
             error: function(error) {
