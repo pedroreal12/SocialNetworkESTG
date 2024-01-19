@@ -5,15 +5,16 @@ $(document).ready(function() {
         success: function(data) {
             var content = JSON.parse(data)
             if (content.length > 0) {
-                var html = "<tr>"
+                var html = ""
                 content.forEach(function(element) {
+                    html += "<tr>"
                     html += "<td><a href=\"/MovieList/Details/" + element.IdList + "\">" + element.StrNameList + "</td>"
                     html += "<td>" + formatDate(element.DateCreated) + "</td>"
                     html += "<td><button id=\"" + element.IdList + "\" onclick=\"editList(this.id)\" type=\"button\" class=\"btn btn-link\">Edit</button></td>"
                     html += "<td><button id=\"" + element.IdList + "\" onclick=\"viewList(this.id)\" type=\"button\" class=\"btn btn-link\">Details</button></td>"
                     html += "<td><button id=\"" + element.IdList + "\" onclick=\"deleteList(this.id)\" type=\"button\" class=\"btn btn-link\">Delete</button></td>"
+                    html += "</tr>"
                 })
-                html += "</tr>"
                 $("#tableLists").append(html);
             } else {
                 alert("No lists were created.")
