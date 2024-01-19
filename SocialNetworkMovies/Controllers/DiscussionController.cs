@@ -91,6 +91,21 @@ namespace SocialNetworkMovies.Controllers
             return Json(data);
         }
 
+        public JsonResult GetLastDiscussionsNews()
+        {
+            var discussions = (from d in context.Discussions
+                               select new
+                               {
+                                   Id = d.Id,
+                                   MovieId = d.FkIdMovie,
+                                   Text = d.StrText,
+                                   DatePosted = d.DateCreated
+                               }).OrderByDescending(d => d.DatePosted)
+            .Take(10).ToList();
+            var data = JsonSerializer.Serialize(discussions);
+            return Json(data);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

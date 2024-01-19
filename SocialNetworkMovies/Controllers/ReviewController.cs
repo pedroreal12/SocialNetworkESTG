@@ -50,6 +50,23 @@ namespace SocialNetworkMovies.Controllers
             return Json(data);
         }
 
+        public JsonResult GetLastReviewsNews()
+        {
+            var reviews = (from r in context.Reviews
+                           join c in context.Comments
+                           on r.FkIdComment equals c.Id
+                           select new
+                           {
+                               Id = r.Id,
+                               Text = c.TextComment,
+                               DatePosted = r.DateCreated,
+                               StrStatus = r.StrState
+                           }).Where(r => r.StrStatus == "Ativo").OrderByDescending(r => r.DatePosted)
+            .Take(10).ToList();
+            var data = JsonSerializer.Serialize(reviews);
+            return Json(data);
+        }
+
         public JsonResult PostReview(int Value, int IdMovie, int FkIdComment)
         {
             try
