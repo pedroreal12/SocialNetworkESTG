@@ -42,8 +42,8 @@ namespace SocialNetworkMovies.Controllers
                                  IdUserList = ul.Id,
                                  StrListName = ul.StrName,
                                  DateCreated = ul.DateCreated
-                             }).Take(10).ToList();
-            var data = Array.Empty<object>();
+                             }).ToList();
+            List<string> data = new List<string>();
             for (int i = 0; i < movieList.Count; i++)
             {
                 var options = new RestClientOptions("https://api.themoviedb.org/3/movie/" + movieList[i].IdMovie);
@@ -52,9 +52,8 @@ namespace SocialNetworkMovies.Controllers
                 request.AddHeader("accept", "application/json");
                 request.AddHeader("Authorization", "Bearer " + key);
                 var response = await client.GetAsync(request);
-                data = new[] { response.Content };
-                Console.WriteLine($"Data {i}: {data}");
-                Console.WriteLine($"Content: {response.Content}");
+
+                data.Add(response.Content);
             }
             var objects = new { Data = data, MovieList = movieList };
             return Json(objects);

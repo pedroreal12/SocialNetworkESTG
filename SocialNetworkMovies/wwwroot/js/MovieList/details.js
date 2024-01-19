@@ -8,10 +8,10 @@ $(document).ready(function() {
         type: "GET",
         url: "/MovieList/GetMoviesByListId/" + Id,
         success: function(data) {
+            var html = "";
             if (data.movieList != undefined || data.data != undefined) {
                 $("#strNameList").append(data.movieList[0].strListName)
                 $("#dateCreated").append(formatDate(data.movieList[0].dateCreated))
-                var html = "";
                 data.data.forEach(function(element) {
                 element = JSON.parse(element)
                     html += "<dd class=\"col-sm-10\"><a href=\"" + element.homepage + "\">" + element.original_title + "</a></dd>"
