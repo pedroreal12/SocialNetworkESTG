@@ -35,16 +35,12 @@ namespace SocialNetworkMovies.Controllers
             var replies = (from r in context.Comments
                            join d in context.Discussions
                            on r.FkIdDiscussion equals d.Id
-                           join u in IdentityContext.Users
-                           on r.FkIdUserCreated equals u.Id
-                           where d.FkIdUserCreated == userId
                            select new
                            {
                                IdComment = r.Id,
                                TextComment = r.TextComment,
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
-                               StrUserName = u.UserName,
                                IdCommentParent = r.FkIdComment
                            }).Where(c => c.FkIdDiscussion == Id)
             .OrderByDescending(c => c.IdComment)

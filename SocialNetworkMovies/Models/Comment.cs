@@ -25,8 +25,6 @@ public partial class Comment
 
     public string? FkIdUserCreated { get; set; }
 
-    public string? UserName { get; set; }
-
     public virtual Comment? FkIdCommentNavigation { get; set; }
 
     public virtual Discussion? FkIdDiscussionNavigation { get; set; }

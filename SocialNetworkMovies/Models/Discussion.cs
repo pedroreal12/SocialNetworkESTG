@@ -21,7 +21,5 @@ public partial class Discussion
 
     public string? FkIdUserCreated { get; set; }
 
-    public string? UserName { get; set; }
-
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }
