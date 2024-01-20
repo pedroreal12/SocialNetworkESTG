@@ -198,7 +198,7 @@ function showReplies(idReply) {
                     alert("Error on loading these replies. Try again later")
                 }
             } else {
-                alert("ERror on loading these replies. Try again later")
+                alert("Error on loading these replies. Try again later")
             }
         },
         error: function(error) {
