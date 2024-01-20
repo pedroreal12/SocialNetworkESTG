@@ -11,10 +11,11 @@ $(document).ready(function() {
         url: "/Discussion/GetDiscussionId/" + Id,
         type: "GET",
         success: function(data) {
-            var content = JSON.parse(data)
-            if (content.Id != undefined) {
+            var user = data.user;
+            var discussion = data.discussion
+            if (user !== undefined && discussion !== undefined) {
                 $.ajax({
-                    url: "/Movies/GetMovieId/" + content.MovieId,
+                    url: "/Movies/GetMovieId/" + discussion.movieId,
                     type: "GET",
                     success: function(data) {
                         var movie = JSON.parse(data.content)
@@ -23,8 +24,8 @@ $(document).ready(function() {
                         }
                     }
                 })
-                $("#commentText").html(content.Text)
-                $("#datePosted").html("Posted at: " + formatDate(content.DatePosted))
+                $("#commentText").html(discussion.text)
+                $("#datePosted").html("Posted at: " + formatDate(discussion.datePosted))
                 loadMoreComments()
             } else {
                 alert("No details about this discussion were found. Try refreshing this page later")
@@ -108,32 +109,33 @@ function loadMoreComments() {
         url: "/Comment/loadCommentsDiscussion/?Id=" + Id + "&&Pagination=" + commentsPage,
         type: "GET",
         success: function(data) {
-            var content = JSON.parse(data)
-            var comments = content.Comments
-            var replies = content.Replies
-            if (comments.length > 0) {
-                comments.forEach(function(comment) {
-                    //TODO: Add user created
-                    var html = "<div id=\"commentSection_" + comment.IdComment + "\">"
-                    html += "<div class=\"row\">"
-                    html += "<textarea disabled=\"disabled\">" + comment.TextComment + "</textarea> At " + formatDate(comment.DatePosted) + "";
-                    replies.forEach(function(reply) {
-                        if (comment.IdComment == reply.IdCommentParent){
-                            html += "<button class=\"btn btn-link\" id=\"showReplies_" + comment.IdComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
-                            html += "<button class=\"btn btn-link\" id=\"hideReplies_" + comment.IdComment + "\" hidden=\"hidden\" onClick=\"hideReplies(" + reply.IdComment + ", this.id)\">Hide Replies</button>"
-                        }
-                        PaginationReplies[comment.IdComment] = 0
+            if ((data.comments !== undefined || data.replies !== undefined) && data.user !== undefined) {
+                var comments = data.comments
+                var replies = data.replies
+                var user = data.user
+                if (comments.length > 0) {
+                    comments.forEach(function(comment) {
+                        var html = "<div id=\"commentSection_" + comment.idComment + "\">"
+                        html += "<div class=\"row\">"
+                        html += "<textarea disabled=\"disabled\">" + comment.textComment + "</textarea> At " + formatDate(comment.datePosted) + " By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a>";
+                        replies.forEach(function(reply) {
+                            if (comment.idComment == reply.idCommentParent){
+                                html += "<button class=\"btn btn-link\" id=\"showReplies_" + comment.idComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
+                                html += "<button class=\"btn btn-link\" id=\"hideReplies_" + comment.idComment + "\" hidden=\"hidden\" onClick=\"hideReplies(" + reply.idComment + ", this.id)\">Hide Replies</button>"
+                            }
+                            PaginationReplies[comment.idComment] = 0
+                        })
+                        html += "<button class=\"btn btn-link\" id=\"replyComment_" + comment.idComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
+                        html += "<button class=\"btn btn-link\" id=\"postReply_" + comment.idComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
+                        html += "</div></div>"
+                        $(".discussionComments").append(html)
                     })
-                    html += "<button class=\"btn btn-link\" id=\"replyComment_" + comment.IdComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
-                    html += "<button class=\"btn btn-link\" id=\"postReply_" + comment.IdComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
-                    html += "</div></div>"
-                    $(".discussionComments").append(html)
-                })
-                $(".discussionComments").append("<div class=\"row\"><button class=\"btn btn-secondary loadMoreComments\">Load more Comments</button></div")
-                $(".loadMoreComments").click(loadMoreComments)
-                commentsPage += 1
-            } else {
-                alert("There are no more comments on this discussion. Try refreshing later")
+                    $(".discussionComments").append("<div class=\"row\"><button class=\"btn btn-secondary loadMoreComments\">Load more Comments</button></div")
+                    $(".loadMoreComments").click(loadMoreComments)
+                    commentsPage += 1
+                } else {
+                    alert("There are no more comments on this discussion. Try refreshing later")
+                }
             }
         },
         error: function(error) {
@@ -178,20 +180,25 @@ function showReplies(idReply) {
         url: "/Comment/GetReplies/?IdDiscussion=" + Id + "&&IdReply=" + idReply + "&&Pagination=" + PaginationReplies[idReply],
         type: "GET",
         success: function(data) {
-            var replies = JSON.parse(data)
-            if (replies.length > 0) {
-                replies.forEach(function(reply) {
-                    var html = "<div id=\"commentSection_" + reply.IdComment + "\"><div class=\"row\"><textarea disabled=\"disabled\">" + reply.TextComment + "</textarea><p> At " + formatDate(reply.DatePosted) + "</p>"
-                    html += "<button class=\"btn btn-link\" id=\"replyComment_" + reply.IdComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
-                    html += "<button class=\"btn btn-link\" id=\"postReply_" + reply.IdComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
-                    html += "<button class=\"btn btn-link\" id=\"showReplies_" + reply.IdComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
-                    html += "<button class=\"btn btn-link\" id=\"hideReplies_" + reply.IdComment + "\" hidden=\"hidden\" onClick=\"hideReplies(" + reply.IdCommentParent + ", this.id)\">Hide Replies</button>"
-                    html += "</div></div>"
-                    $("#commentSection_" + reply.IdCommentParent).append(html)
-                })
-                PaginationReplies[idReply] += 1
+            if (data.replies !== undefined && data.user !== undefined) {
+                var replies = data.replies
+                var user = data.user
+                if (replies.length > 0) {
+                    replies.forEach(function(reply) {
+                        var html = "<div id=\"commentSection_" + reply.idComment + "\"><div class=\"row\"><textarea disabled=\"disabled\">" + reply.textComment + "</textarea><p> At " + formatDate(reply.datePosted) + " By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a></p>"
+                        html += "<button class=\"btn btn-link\" id=\"replyComment_" + reply.idComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
+                        html += "<button class=\"btn btn-link\" id=\"postReply_" + reply.idComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
+                        html += "<button class=\"btn btn-link\" id=\"showReplies_" + reply.idComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
+                        html += "<button class=\"btn btn-link\" id=\"hideReplies_" + reply.idComment + "\" hidden=\"hidden\" onClick=\"hideReplies(" + reply.IdCommentParent + ", this.id)\">Hide Replies</button>"
+                        html += "</div></div>"
+                        $("#commentSection_" + reply.idCommentParent).append(html)
+                    })
+                    PaginationReplies[idReply] += 1
+                } else {
+                    alert("Error on loading these replies. Try again later")
+                }
             } else {
-                alert("Error on loading these replies. Try again later")
+                alert("ERror on loading these replies. Try again later")
             }
         },
         error: function(error) {

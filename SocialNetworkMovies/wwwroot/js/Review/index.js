@@ -9,15 +9,18 @@ function loadReviews() {
         url: "/Review/GetReviews/?Pagination=" + Pagination,
         type: "GET",
         success: function(data) {
-            var content = JSON.parse(data)
-            if (content.length > 0) {
-                content.forEach(function(element) {
-                        $(".listReviews").append("<a href=\"/Review/Details/" + element.Id + "\">" + element.Text + " - Posted at " + formatDate(element.DatePosted) + "</a><br>")
-                })
-                $(".listReviews").append("<button class=\"btn btn-link\" onClick=\"loadReviews()\" id=\"loadReviews\">Load more reviews</button>")
-                Pagination += 1
-            } else {
-                alert("Error on loading more comments. Try this later")
+            if (data.reviews !== undefined && data.user !== undefined) {
+                var reviews = data.reviews
+                var user = data.user
+                if (reviews.length > 0) {
+                    reviews.forEach(function(element) {
+                        $(".listReviews").append("<a href=\"/Review/Details/" + element.id + "\">" + element.text + " - Posted at " + formatDate(element.datePosted) + "</a> By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a><br>")
+                    })
+                    $(".listReviews").append("<button class=\"btn btn-link\" onClick=\"loadReviews()\" id=\"loadReviews\">Load more reviews</button>")
+                    Pagination += 1
+                } else {
+                    alert("Error on loading more comments. Try this later")
+                }
             }
         },
         error: function(error) {

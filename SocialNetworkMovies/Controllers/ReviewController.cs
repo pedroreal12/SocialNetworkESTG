@@ -2,12 +2,21 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using SocialNetworkMovies.Models;
+using SocialNetworkMovies.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace SocialNetworkMovies.Controllers
 {
     public class ReviewController : Controller
     {
+        private readonly SocialNetworkMovies.Data.SocialNetworkMoviesContext IdentityContext = new();
         private readonly SndbContext context = new();
+        private readonly UserManager<SocialNetworkMoviesUser> _userManager;
+        // GET: CommentController
+        public ReviewController(UserManager<SocialNetworkMoviesUser> userManager)
+        {
+            _userManager = userManager;
+        }
         // GET: ReviewController
         public ActionResult Index()
         {
@@ -28,8 +37,16 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = c.DateCreated,
                                StrState = r.StrState
                            }).OrderByDescending(r => r.Id).Where(r => r.StrState == "Ativo").Skip(Pagination * 10).Take(10).ToList();
-            var data = JsonSerializer.Serialize(reviews);
-            return Json(data);
+            string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
+            var objects = new { Reviews = reviews, User = user };
+            return Json(objects);
         }
 
         public JsonResult GetDetails(int Id)
@@ -46,8 +63,16 @@ namespace SocialNetworkMovies.Controllers
                               DatePosted = c.DateCreated,
                               StrState = r.StrState
                           }).OrderByDescending(r => r.Id).Where(r => r.StrState == "Ativo" && r.Id == Id).ToList();
-            var data = JsonSerializer.Serialize(review);
-            return Json(data);
+            string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
+            var objects = new { Review = review, User = user };
+            return Json(objects);
         }
 
         public JsonResult GetLastReviewsNews()

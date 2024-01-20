@@ -57,13 +57,9 @@ namespace SocialNetworkMovies.Controllers
         [HttpGet]
         public JsonResult LoadCommentsDiscussion(int Id, int Pagination)
         {
-            string userId = _userManager.GetUserId(User);
             var comments = (from c in context.Comments
                             join d in context.Discussions
                             on c.FkIdDiscussion equals d.Id
-                            join u in IdentityContext.Users
-                            on c.FkIdUserCreated equals u.Id
-                            where d.FkIdUserCreated == userId
                             select new
                             {
                                 IdComment = c.Id,
@@ -71,7 +67,6 @@ namespace SocialNetworkMovies.Controllers
                                 DatePosted = c.DateCreated,
                                 FkIdDiscussion = c.FkIdDiscussion,
                                 IdCommentParent = c.FkIdComment,
-                                StrUserName = u.UserName
                             }).Where(c => c.FkIdDiscussion == Id && c.IdCommentParent == null)
             .OrderByDescending(c => c.IdComment)
             .Skip(Pagination * 10).Take(10).ToList();
@@ -79,9 +74,6 @@ namespace SocialNetworkMovies.Controllers
             var replies = (from r in context.Comments
                            join d in context.Discussions
                            on r.FkIdDiscussion equals d.Id
-                           join u in IdentityContext.Users
-                           on r.FkIdUserCreated equals u.Id
-                           where d.FkIdUserCreated == u.Id
                            select new
                            {
                                IdComment = r.Id,
@@ -89,14 +81,20 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
-                               StrUserName = u.UserName
                            }).Where(r => r.FkIdDiscussion == Id && r.IdCommentParent != null)
                             .OrderByDescending(r => r.IdComment)
                             .Skip(Pagination * 10).Take(10).ToList();
+            string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
 
-            var objects = new { Comments = comments, Replies = replies };
-            string data = JsonSerializer.Serialize(objects);
-            return Json(data);
+            var objects = new { Comments = comments, Replies = replies, User = user };
+            return Json(objects);
         }
 
         public JsonResult GetReplies(int IdDiscussion, int idReply, int Pagination)
@@ -104,9 +102,6 @@ namespace SocialNetworkMovies.Controllers
             var replies = (from r in context.Comments
                            join d in context.Discussions
                            on r.FkIdDiscussion equals d.Id
-                           join u in IdentityContext.Users
-                           on r.FkIdUserCreated equals u.Id
-                           where d.FkIdUserCreated == u.Id
                            select new
                            {
                                IdComment = r.Id,
@@ -114,13 +109,21 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
-                               StrUserName = u.UserName
                            }).Where(r => r.FkIdDiscussion == IdDiscussion && r.IdCommentParent == idReply)
                             .OrderByDescending(r => r.IdComment)
                             .Skip(Pagination * 10).Take(10).ToList();
 
-            string data = JsonSerializer.Serialize(replies);
-            return Json(data);
+            string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
+
+            var objects = new { Replies = replies, User = user };
+            return Json(objects);
         }
         [HttpPost]
         public JsonResult PostReply(IFormCollection collection)

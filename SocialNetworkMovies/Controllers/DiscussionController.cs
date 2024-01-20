@@ -39,21 +39,29 @@ namespace SocialNetworkMovies.Controllers
         [HttpGet]
         public IActionResult GetDiscussionId(int Id)
         {
-            //TODO: add user created
             string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
             var discussion = (from d in context.Discussions
-                              join u in IdentityContext.Users
-                              on d.FkIdUserCreated equals u.Id
                               select new
                               {
                                   Id = d.Id,
                                   MovieId = d.FkIdMovie,
                                   Text = d.StrText,
                                   DatePosted = d.DateCreated,
-                                  StrUserName = u.UserName
-                              }).Where(d => d.Id == Id).First();
-            var data = JsonSerializer.Serialize(discussion);
-            return Json(data);
+                                  IdUserCreated = d.FkIdUserCreated
+                              }).Where(d => d.Id == Id).FirstOrDefault();
+            if (discussion == null)
+            {
+                return Json("");
+            }
+            var objects = new { User = user, Discussion = discussion };
+            return Json(objects);
         }
 
         [HttpPost]
@@ -88,7 +96,6 @@ namespace SocialNetworkMovies.Controllers
 
         public JsonResult GetLastDiscussions()
         {
-            string userId = _userManager.GetUserId(User);
             var discussions = (from d in context.Discussions
                                select new
                                {
@@ -98,24 +105,29 @@ namespace SocialNetworkMovies.Controllers
                                    DatePosted = d.DateCreated,
                                }).OrderByDescending(d => d.Id)
             .Take(10).ToList();
-            var data = JsonSerializer.Serialize(discussions);
-            return Json(data);
+            string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
+
+            var objects = new { Discussions = discussions, User = user };
+            return Json(objects);
         }
 
         public JsonResult GetLastDiscussionsNews()
         {
             string userId = _userManager.GetUserId(User);
             var discussions = (from d in context.Discussions
-                               join u in IdentityContext.Users
-                               on d.FkIdUserCreated equals u.Id
-                               where d.FkIdUserCreated == userId
                                select new
                                {
                                    Id = d.Id,
                                    MovieId = d.FkIdMovie,
                                    Text = d.StrText,
                                    DatePosted = d.DateCreated,
-                                   StrUserName = u.UserName
                                }).OrderByDescending(d => d.DatePosted)
             .Take(10).ToList();
             var data = JsonSerializer.Serialize(discussions);

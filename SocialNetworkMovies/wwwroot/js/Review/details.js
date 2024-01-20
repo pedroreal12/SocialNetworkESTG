@@ -34,14 +34,17 @@ function getDetails() {
         url: "/Review/GetDetails/?Id=" + Id,
         type: "GET",
         success: function(data) {
-            var content = JSON.parse(data)
-            if (content.length > 0) {
-                $(".reviewDetails").append("<div class=\"row\"><textarea disabled=\"disabled\">" + content[0].Text + " " + content[0].Value + "/10*</textarea> - Posted at " + formatDate(content[0].DatePosted) + "</div>")
+            if (data.user !== undefined && data.review !== undefined) {
+                var user = data.user
+                var review = data.review
+                if (review.length > 0) {
+                    $(".reviewDetails").append("<div class=\"row\"><textarea disabled=\"disabled\">" + review[0].text + " " + review[0].value + "/10*</textarea> <p>- Posted at " + formatDate(review[0].datePosted) + " By <a href=\"/User/Details/" + user.idUser+ "\">" + user.strUserName + "</a></p></div>")
 
-                IdMovie = content[0].IdMovie
-                getMovie()
-            } else {
-                alert("Error on loading more comments. Try this later")
+                    IdMovie = review[0].idMovie
+                    getMovie()
+                } else {
+                    alert("Error on loading more comments. Try this later")
+                }
             }
         },
         error: function(error) {
