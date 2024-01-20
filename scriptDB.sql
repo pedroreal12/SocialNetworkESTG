@@ -74,11 +74,11 @@ CREATE TABLE Permissions (
     FkIdUserCreated INT FOREIGN KEY REFERENCES Users(Id),
     FkIdUserLastChanged INT FOREIGN KEY REFERENCES Users(Id),
 );*/
-
 CREATE TABLE Review(
     Id INT PRIMARY KEY IDENTITY (1, 1),
     FkIdMovie INT NOT NULL,
     IntValue INT NOT NULL,
+    UserName NVARCHAR(256) NULL,
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     FkIdComment INT NOT NULL,
     StrState VARCHAR(20) NOT NULL,
@@ -123,6 +123,7 @@ CREATE TABLE Discussion (
     FkIdMovie INT NOT NULL,
     strText VARCHAR(255) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
+    UserName NVARCHAR(256) NULL,
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     DateCreated DATETIME NOT NULL,
     DateLastChanged DATETIME NOT NULL,
@@ -133,6 +134,7 @@ CREATE TABLE Comment (
     FkIdComment INT FOREIGN KEY REFERENCES Comment(Id), 
     TextComment VARCHAR(255) NOT NULL,
     FkIdDiscussion INT NULL FOREIGN KEY REFERENCES Discussion(Id),
+    UserName NVARCHAR(256) NULL,
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,
@@ -143,6 +145,7 @@ CREATE TABLE UserList (
     Id INT PRIMARY KEY IDENTITY (1, 1),
     StrName VARCHAR(128) NOT NULL,
     FkIdMovieList INT FOREIGN KEY REFERENCES Comment(Id), 
+    UserName NVARCHAR(256) NULL,
     FkIdUserCreated NVARCHAR(450) NOT NULL,
     StrState VARCHAR(20) NOT NULL,
     DateCreated DATETIME NOT NULL,

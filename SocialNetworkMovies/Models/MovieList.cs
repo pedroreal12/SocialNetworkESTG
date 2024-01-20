@@ -21,5 +21,7 @@ public partial class MovieList
 
     public string? FkIdUserCreated { get; set; }
 
+    public string? UserName { get; set; }
+
     public virtual UserList? FkIdListNavigation { get; set; }
 }

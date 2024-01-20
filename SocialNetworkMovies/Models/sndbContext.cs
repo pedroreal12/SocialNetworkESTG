@@ -32,6 +32,7 @@ public partial class SndbContext : DbContext
     public virtual DbSet<UserList> UserLists { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=localhost, 1433;Database=sndb;User Id=SA;Password=A&VeryComplex123Password;TrustServerCertificate=True;MultipleActiveResultSets=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,6 +83,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.TextComment)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.FkIdCommentNavigation).WithMany(p => p.InverseFkIdCommentNavigation)
                 .HasForeignKey(d => d.FkIdComment)
@@ -112,6 +114,7 @@ public partial class SndbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("strText");
+            entity.Property(e => e.UserName).HasMaxLength(256);
         });
 
         modelBuilder.Entity<MovieList>(entity =>
@@ -130,6 +133,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.StrState)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.FkIdListNavigation).WithMany(p => p.MovieLists)
                 .HasForeignKey(d => d.FkIdList)
@@ -172,6 +176,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.StrState)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
         });
 
         modelBuilder.Entity<Student>(entity =>
@@ -219,6 +224,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.StrState)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.FkIdMovieListNavigation).WithMany(p => p.UserLists)
                 .HasForeignKey(d => d.FkIdMovieList)
