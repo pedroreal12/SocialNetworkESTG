@@ -83,6 +83,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.TextComment)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.FkIdCommentNavigation).WithMany(p => p.InverseFkIdCommentNavigation)
                 .HasForeignKey(d => d.FkIdComment)
@@ -113,6 +114,7 @@ public partial class SndbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("strText");
+            entity.Property(e => e.UserName).HasMaxLength(256);
         });
 
         modelBuilder.Entity<MovieList>(entity =>
@@ -173,6 +175,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.StrState)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
         });
 
         modelBuilder.Entity<Student>(entity =>
@@ -220,6 +223,7 @@ public partial class SndbContext : DbContext
             entity.Property(e => e.StrState)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.FkIdMovieListNavigation).WithMany(p => p.UserLists)
                 .HasForeignKey(d => d.FkIdMovieList)

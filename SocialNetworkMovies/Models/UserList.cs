@@ -21,6 +21,8 @@ public partial class UserList
 
     public string FkIdUserCreated { get; set; } = null!;
 
+    public string? UserName { get; set; }
+
     public virtual Comment? FkIdMovieListNavigation { get; set; }
 
     public virtual ICollection<MovieList> MovieLists { get; set; } = new List<MovieList>();

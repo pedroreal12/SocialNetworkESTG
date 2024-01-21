@@ -31,7 +31,6 @@ namespace SocialNetworkMovies.Controllers
 
         public JsonResult LoadRepliesCommentParentId(int Id, int Pagination)
         {
-            string userId = _userManager.GetUserId(User);
             var replies = (from r in context.Comments
                            join d in context.Discussions
                            on r.FkIdDiscussion equals d.Id
@@ -41,7 +40,8 @@ namespace SocialNetworkMovies.Controllers
                                TextComment = r.TextComment,
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
-                               IdCommentParent = r.FkIdComment
+                               IdCommentParent = r.FkIdComment,
+                               IdUserCreated = r.FkIdUserCreated
                            }).Where(c => c.FkIdDiscussion == Id)
             .OrderByDescending(c => c.IdComment)
             .Skip(Pagination * 10).Take(10).ToList();
@@ -77,19 +77,12 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
+                               IdUserCreated = r.FkIdUserCreated
                            }).Where(r => r.FkIdDiscussion == Id && r.IdCommentParent != null)
                             .OrderByDescending(r => r.IdComment)
                             .Skip(Pagination * 10).Take(10).ToList();
-            string userId = _userManager.GetUserId(User);
-            var user = (from u in IdentityContext.Users
-                        where u.Id == userId
-                        select new
-                        {
-                            IdUser = u.Id,
-                            StrUserName = u.UserName
-                        }).FirstOrDefault();
 
-            var objects = new { Comments = comments, Replies = replies, User = user };
+            var objects = new { Comments = comments, Replies = replies };
             return Json(objects);
         }
 
