@@ -4,7 +4,6 @@ using SocialNetworkMovies.Models;
 using System.Text.Json;
 using SocialNetworkMovies.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace SocialNetworkMovies.Controllers
 {
@@ -54,11 +53,43 @@ namespace SocialNetworkMovies.Controllers
         [HttpGet]
         public JsonResult LoadCommentsDiscussion(int Id, int Pagination)
         {
+            var comments = (from c in context.Comments
+                            join d in context.Discussions
+                            on c.FkIdDiscussion equals d.Id
+                            select new
+                            {
+                                IdComment = c.Id,
+                                TextComment = c.TextComment,
+                                DatePosted = c.DateCreated,
+                                FkIdDiscussion = c.FkIdDiscussion,
+                                IdCommentParent = c.FkIdComment,
+                            }).Where(c => c.FkIdDiscussion == Id && c.IdCommentParent == null)
+            .OrderByDescending(c => c.IdComment)
+            .Skip(Pagination * 10).Take(10).ToList();
 
-            string query = $"SELECT r.Id as IdComment, MAX(r.TextComment) as TextComment, MAX(r.DateCreated) as DatePosted, MAX(r.FkIdComment) as IdCommentParent, u.UserName, MAX(c.DateCreated) as DateCreated FROM Comment r JOIN Discussion d ON d.Id = r.FkIdDiscussion JOIN Comment c ON c.FkIdComment IS NULL JOIN snidentitydb.dbo.AspNetUsers u ON u.Id = r.FkIdUserCreated WHERE r.FkIdDiscussion = {Id} GROUP BY r.Id, u.UserName ORDER BY r.Id OFFSET {Pagination} ROWS FETCH NEXT 10 ROWS ONLY";
+            var replies = (from r in context.Comments
+                           join d in context.Discussions
+                           on r.FkIdDiscussion equals d.Id
+                           select new
+                           {
+                               IdComment = r.Id,
+                               TextComment = r.TextComment,
+                               DatePosted = r.DateCreated,
+                               FkIdDiscussion = r.FkIdDiscussion,
+                               IdCommentParent = r.FkIdComment,
+                           }).Where(r => r.FkIdDiscussion == Id && r.IdCommentParent != null)
+                            .OrderByDescending(r => r.IdComment)
+                            .Skip(Pagination * 10).Take(10).ToList();
+            string userId = _userManager.GetUserId(User);
+            var user = (from u in IdentityContext.Users
+                        where u.Id == userId
+                        select new
+                        {
+                            IdUser = u.Id,
+                            StrUserName = u.UserName
+                        }).FirstOrDefault();
 
-            var results = context.Comments.FromSqlRaw(query).ToList();
-            var objects = new { Results = results };
+            var objects = new { Comments = comments, Replies = replies, User = user };
             return Json(objects);
         }
 
