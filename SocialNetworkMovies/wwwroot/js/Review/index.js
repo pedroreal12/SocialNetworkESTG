@@ -9,12 +9,11 @@ function loadReviews() {
         url: "/Review/GetReviews/?Pagination=" + Pagination,
         type: "GET",
         success: function(data) {
-            if (data.reviews !== undefined && data.user !== undefined) {
+            if (data.reviews !== undefined) {
                 var reviews = data.reviews
-                var user = data.user
                 if (reviews.length > 0) {
                     reviews.forEach(function(element) {
-                        $(".listReviews").append("<a href=\"/Review/Details/" + element.id + "\">" + element.text + " - Posted at " + formatDate(element.datePosted) + "</a> By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a><br>")
+                        $(".listReviews").append("<a href=\"/Review/Details/" + element.id + "\">" + element.text + " - Posted at " + formatDate(element.datePosted) + "</a> By <a href=\"/User/Details/" + element.idUser + "\">" + element.userName + "</a><br>")
                     })
                     $(".listReviews").append("<button class=\"btn btn-link\" onClick=\"loadReviews()\" id=\"loadReviews\">Load more reviews</button>")
                     Pagination += 1

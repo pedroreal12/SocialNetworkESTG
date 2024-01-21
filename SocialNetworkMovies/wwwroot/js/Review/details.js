@@ -34,11 +34,10 @@ function getDetails() {
         url: "/Review/GetDetails/?Id=" + Id,
         type: "GET",
         success: function(data) {
-            if (data.user !== undefined && data.review !== undefined) {
-                var user = data.user
+            if (data.review !== undefined) {
                 var review = data.review
                 if (review.length > 0) {
-                    $(".reviewDetails").append("<div class=\"row\"><textarea disabled=\"disabled\">" + review[0].text + " " + review[0].value + "/10*</textarea> <p>- Posted at " + formatDate(review[0].datePosted) + " By <a href=\"/User/Details/" + user.idUser+ "\">" + user.strUserName + "</a></p></div>")
+                    $(".reviewDetails").append("<div class=\"row\"><textarea disabled=\"disabled\">" + review[0].text + " " + review[0].value + "/10*</textarea> <p>- Posted at " + formatDate(review[0].datePosted) + " By <a href=\"/User/Details/" + review.idUser + "\">" + review.userName + "</a></p></div>")
 
                     IdMovie = review[0].idMovie
                     getMovie()

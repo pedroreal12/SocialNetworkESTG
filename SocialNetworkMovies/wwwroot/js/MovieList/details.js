@@ -14,7 +14,7 @@ $(document).ready(function() {
                 $("#dateCreated").append(formatDate(data.movieList[0].dateCreated))
                 data.data.forEach(function(element, key) {
                     element = JSON.parse(element)
-                    html += "<dd class=\"col-sm-10\"><a href=\"" + element.homepage + "\">" + element.original_title + "</a><button onclick=\"removeFromList(this.id, " + element.id + ")\" id=\"removeMovie_" + data.movieList[key].idMovieList + "\" class=\"btn btn-danger\">Remove from list</button></dd>"
+                    html += "<dd class=\"col-sm-10\"><a href=\"" + (element.homepage != "" ? element.homepage : "#") + "\">" + element.original_title + "</a><button onclick=\"removeFromList(this.id, " + element.id + ")\" id=\"removeMovie_" + data.movieList[key].idMovieList + "\" class=\"btn btn-danger\">Remove from list</button></dd>"
                 })
                 $("#movieDisplayer").append(html)
             } else {

@@ -93,6 +93,7 @@ namespace SocialNetworkMovies.Controllers
             try
             {
                 string userId = _userManager.GetUserId(User);
+                string UserName = _userManager.GetUserName(User);
                 string StrListName = collection?["StrListName"] ?? "";
 
                 if (StrListName == "")
@@ -107,6 +108,7 @@ namespace SocialNetworkMovies.Controllers
                     DateLastChanged = DateTime.Now,
                     StrState = "Ativo",
                     FkIdUserCreated = userId,
+                    UserName = UserName
                 };
 
                 context.UserLists.Add(userList);

@@ -11,9 +11,8 @@ $(document).ready(function() {
         url: "/Discussion/GetDiscussionId/" + Id,
         type: "GET",
         success: function(data) {
-            var user = data.user;
-            var discussion = data.discussion
-            if (user !== undefined && discussion !== undefined) {
+            if (data.discussion !== undefined) {
+                var discussion = data.discussion
                 $.ajax({
                     url: "/Movies/GetMovieId/" + discussion.movieId,
                     type: "GET",
@@ -25,7 +24,7 @@ $(document).ready(function() {
                     }
                 })
                 $("#commentText").html(discussion.text)
-                $("#datePosted").html("Posted at: " + formatDate(discussion.datePosted))
+                $("#datePosted").html("Posted at: " + formatDate(discussion.datePosted) + "By <a href=\"/User/Details/" + discussion.idUser + "\">" + discussion.userName + "</a>")
                 loadMoreComments()
             } else {
                 alert("No details about this discussion were found. Try refreshing this page later")
@@ -109,15 +108,14 @@ function loadMoreComments() {
         url: "/Comment/loadCommentsDiscussion/?Id=" + Id + "&&Pagination=" + commentsPage,
         type: "GET",
         success: function(data) {
-            if ((data.comments !== undefined || data.replies !== undefined) && data.user !== undefined) {
+            if ((data.comments !== undefined || data.replies !== undefined)) {
                 var comments = data.comments
                 var replies = data.replies
-                var user = data.user
                 if (comments.length > 0) {
                     comments.forEach(function(comment) {
                         var html = "<div id=\"commentSection_" + comment.idComment + "\">"
                         html += "<div class=\"row\">"
-                        html += "<textarea disabled=\"disabled\">" + comment.textComment + "</textarea> At " + formatDate(comment.datePosted) + " By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a>";
+                        html += "<textarea disabled=\"disabled\">" + comment.textComment + "</textarea> At " + formatDate(comment.datePosted) + " By <a href=\"/User/Details/" + comment.idUser + "\">" + comment.strUserName + "</a>";
                         replies.forEach(function(reply) {
                             if (comment.idComment == reply.idCommentParent){
                                 html += "<button class=\"btn btn-link\" id=\"showReplies_" + comment.idComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"
@@ -180,12 +178,11 @@ function showReplies(idReply) {
         url: "/Comment/GetReplies/?IdDiscussion=" + Id + "&&IdReply=" + idReply + "&&Pagination=" + PaginationReplies[idReply],
         type: "GET",
         success: function(data) {
-            if (data.replies !== undefined && data.user !== undefined) {
+            if (data.replies !== undefined) {
                 var replies = data.replies
-                var user = data.user
                 if (replies.length > 0) {
                     replies.forEach(function(reply) {
-                        var html = "<div id=\"commentSection_" + reply.idComment + "\"><div class=\"row\"><textarea disabled=\"disabled\">" + reply.textComment + "</textarea><p> At " + formatDate(reply.datePosted) + " By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a></p>"
+                        var html = "<div id=\"commentSection_" + reply.idComment + "\"><div class=\"row\"><textarea disabled=\"disabled\">" + reply.textComment + "</textarea><p> At " + formatDate(reply.datePosted) + " By <a href=\"/User/Details/" + reply.idUser + "\">" + reply.userName + "</a></p>"
                         html += "<button class=\"btn btn-link\" id=\"replyComment_" + reply.idComment + "\" onClick=\"replyComment(this.id)\">Reply</button>";
                         html += "<button class=\"btn btn-link\" id=\"postReply_" + reply.idComment + "\" onClick=\"postReply(this.id)\" hidden=\"hidden\">Post reply</button>";
                         html += "<button class=\"btn btn-link\" id=\"showReplies_" + reply.idComment + "\" onClick=\"showReplies(this.id)\">Show Replies</button>"

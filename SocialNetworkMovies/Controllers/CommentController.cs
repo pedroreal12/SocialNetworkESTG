@@ -41,7 +41,8 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
-                               IdUserCreated = r.FkIdUserCreated
+                               IdUserCreated = r.FkIdUserCreated,
+                               UserName = r.UserName
                            }).Where(c => c.FkIdDiscussion == Id)
             .OrderByDescending(c => c.IdComment)
             .Skip(Pagination * 10).Take(10).ToList();
@@ -63,6 +64,8 @@ namespace SocialNetworkMovies.Controllers
                                 DatePosted = c.DateCreated,
                                 FkIdDiscussion = c.FkIdDiscussion,
                                 IdCommentParent = c.FkIdComment,
+                                StrUserName = c.UserName,
+                                IdUser = c.FkIdUserCreated
                             }).Where(c => c.FkIdDiscussion == Id && c.IdCommentParent == null)
             .OrderByDescending(c => c.IdComment)
             .Skip(Pagination * 10).Take(10).ToList();
@@ -77,7 +80,8 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
-                               IdUserCreated = r.FkIdUserCreated
+                               StrUserName = r.UserName,
+                               IdUser = r.FkIdUserCreated
                            }).Where(r => r.FkIdDiscussion == Id && r.IdCommentParent != null)
                             .OrderByDescending(r => r.IdComment)
                             .Skip(Pagination * 10).Take(10).ToList();
@@ -98,20 +102,13 @@ namespace SocialNetworkMovies.Controllers
                                DatePosted = r.DateCreated,
                                FkIdDiscussion = r.FkIdDiscussion,
                                IdCommentParent = r.FkIdComment,
+                               StrUserName = r.UserName,
+                               IdUser = r.FkIdUserCreated
                            }).Where(r => r.FkIdDiscussion == IdDiscussion && r.IdCommentParent == idReply)
                             .OrderByDescending(r => r.IdComment)
                             .Skip(Pagination * 10).Take(10).ToList();
 
-            string userId = _userManager.GetUserId(User);
-            var user = (from u in IdentityContext.Users
-                        where u.Id == userId
-                        select new
-                        {
-                            IdUser = u.Id,
-                            StrUserName = u.UserName
-                        }).FirstOrDefault();
-
-            var objects = new { Replies = replies, User = user };
+            var objects = new { Replies = replies };
             return Json(objects);
         }
         [HttpPost]
@@ -125,12 +122,14 @@ namespace SocialNetworkMovies.Controllers
                 }
 
                 string userId = _userManager.GetUserId(User);
+                string UserName = _userManager.GetUserName(User);
                 Comment comment = new()
                 {
                     StrName = "Remove this later",
                     FkIdDiscussion = int.Parse(collection["IdDiscussion"]),
                     TextComment = collection["Text"],
                     FkIdComment = int.Parse(collection["FkIdCommentParent"]),
+                    UserName = UserName,
                     FkIdUserCreated = userId,
                     DateCreated = DateTime.Now,
                     DateLastChanged = DateTime.Now,
@@ -155,6 +154,7 @@ namespace SocialNetworkMovies.Controllers
             try
             {
                 string userId = _userManager.GetUserId(User);
+                string UserName = _userManager.GetUserName(User);
                 Comment comment = new()
                 {
                     StrName = "Remove this later",
@@ -163,6 +163,7 @@ namespace SocialNetworkMovies.Controllers
                     FkIdUserCreated = userId,
                     DateCreated = DateTime.Now,
                     DateLastChanged = DateTime.Now,
+                    UserName = UserName,
                     StrState = "Activo"
                 };
 

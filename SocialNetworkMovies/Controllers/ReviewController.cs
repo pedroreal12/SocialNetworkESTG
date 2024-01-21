@@ -35,17 +35,11 @@ namespace SocialNetworkMovies.Controllers
                                Text = c.TextComment,
                                Value = r.IntValue,
                                DatePosted = c.DateCreated,
-                               StrState = r.StrState
+                               StrState = r.StrState,
+                               UserName = r.UserName,
+                               IdUser = r.FkIdUserCreated
                            }).OrderByDescending(r => r.Id).Where(r => r.StrState == "Ativo").Skip(Pagination * 10).Take(10).ToList();
-            string userId = _userManager.GetUserId(User);
-            var user = (from u in IdentityContext.Users
-                        where u.Id == userId
-                        select new
-                        {
-                            IdUser = u.Id,
-                            StrUserName = u.UserName
-                        }).FirstOrDefault();
-            var objects = new { Reviews = reviews, User = user };
+            var objects = new { Reviews = reviews };
             return Json(objects);
         }
 
@@ -61,17 +55,10 @@ namespace SocialNetworkMovies.Controllers
                               Text = c.TextComment,
                               Value = r.IntValue,
                               DatePosted = c.DateCreated,
-                              StrState = r.StrState
+                              StrState = r.StrState,
+                              UserName = r.UserName,
                           }).OrderByDescending(r => r.Id).Where(r => r.StrState == "Ativo" && r.Id == Id).ToList();
-            string userId = _userManager.GetUserId(User);
-            var user = (from u in IdentityContext.Users
-                        where u.Id == userId
-                        select new
-                        {
-                            IdUser = u.Id,
-                            StrUserName = u.UserName
-                        }).FirstOrDefault();
-            var objects = new { Review = review, User = user };
+            var objects = new { Review = review };
             return Json(objects);
         }
 
@@ -85,7 +72,8 @@ namespace SocialNetworkMovies.Controllers
                                Id = r.Id,
                                Text = c.TextComment,
                                DatePosted = r.DateCreated,
-                               StrStatus = r.StrState
+                               StrStatus = r.StrState,
+                               UserName = r.UserName,
                            }).Where(r => r.StrStatus == "Ativo").OrderByDescending(r => r.DatePosted)
             .Take(10).ToList();
             var data = JsonSerializer.Serialize(reviews);
@@ -96,12 +84,16 @@ namespace SocialNetworkMovies.Controllers
         {
             try
             {
+                string userId = _userManager.GetUserId(User);
+                string UserName = _userManager.GetUserName(User);
                 Review review = new()
                 {
                     FkIdMovie = IdMovie,
                     IntValue = Value,
                     FkIdComment = FkIdComment,
                     DateCreated = DateTime.Now,
+                    FkIdUserCreated = userId,
+                    UserName = UserName,
                     DateLastChanged = DateTime.Now,
                     StrState = "Ativo"
                 };
@@ -122,27 +114,6 @@ namespace SocialNetworkMovies.Controllers
         public ActionResult Details(int id)
         {
             return View();
-        }
-
-        // GET: ReviewController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ReviewController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: ReviewController/Edit/5
