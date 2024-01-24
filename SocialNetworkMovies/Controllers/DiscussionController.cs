@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace SocialNetworkMovies.Controllers
 {
+    [Authorize]
     public class DiscussionController : Controller
     {
         private readonly SocialNetworkMovies.Data.SocialNetworkMoviesContext IdentityContext = new();

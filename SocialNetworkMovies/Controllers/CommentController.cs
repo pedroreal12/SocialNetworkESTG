@@ -4,9 +4,11 @@ using SocialNetworkMovies.Models;
 using System.Text.Json;
 using SocialNetworkMovies.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SocialNetworkMovies.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly SocialNetworkMovies.Data.SocialNetworkMoviesContext IdentityContext = new();

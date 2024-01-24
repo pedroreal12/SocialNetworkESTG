@@ -5,10 +5,11 @@ using SocialNetworkMovies.Data;
 using System.Text.Json;
 using SocialNetworkMovies.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace SocialNetworkMovies.Controllers
 {
+    [Authorize]
     public class UserListController : Controller
     {
         private readonly SndbContext context = new();
