@@ -4,8 +4,9 @@ $(document).ready(function(){
         url: '/Discussion/GetLastDiscussions',
         type: 'GET',
         success: function(data) {
-            if (data.discussions !== undefined) {
+            if (data.discussions !== undefined && data.user !== undefined) {
                 var discussions = data.discussions
+                var user = data.user
                 if (discussions.length > 0) {
                     discussions.forEach(function(element){
                         $.ajax({
@@ -14,7 +15,7 @@ $(document).ready(function(){
                             success: function(data){
                                 var content = JSON.parse(data.content)
                                 if (content.adult != undefined){
-                                    $(".displayDiscussions").append("<a href=\"Discussion/Details/" + element.id+ "\"><p>" + element.text + " - Posted At " + formatDate(element.datePosted) + " By <a href=\"/User/Details/" + element.idUser + "\">" + element.strUserName + "</a></p>")
+                                    $(".displayDiscussions").append("<a href=\"Discussion/Details/" + element.id+ "\"><p>" + element.text + " - Posted At " + formatDate(element.datePosted) + " By <a href=\"/User/Details/" + user.idUser + "\">" + user.strUserName + "</a></p>")
                                     $(".displayDiscussions").append("<img src=\"" + imageUrl + content.backdrop_path + "\"></img>")
                                 }
                             },
