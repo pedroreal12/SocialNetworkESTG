@@ -103,24 +103,17 @@ namespace SocialNetworkMovies.Controllers
                                    MovieId = d.FkIdMovie,
                                    Text = d.StrText,
                                    DatePosted = d.DateCreated,
+                                   UserName = d.UserName,
+                                   IdUser = d.FkIdUserCreated
                                }).OrderByDescending(d => d.Id)
             .Take(10).ToList();
-            string userId = _userManager.GetUserId(User);
-            var user = (from u in IdentityContext.Users
-                        where u.Id == userId
-                        select new
-                        {
-                            IdUser = u.Id,
-                            StrUserName = u.UserName
-                        }).FirstOrDefault();
 
-            var objects = new { Discussions = discussions, User = user };
+            var objects = new { Discussions = discussions };
             return Json(objects);
         }
 
         public JsonResult GetLastDiscussionsNews()
         {
-            string userId = _userManager.GetUserId(User);
             var discussions = (from d in context.Discussions
                                select new
                                {
